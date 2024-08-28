@@ -7,7 +7,7 @@ const router = Router()
 
 router.post("/", createAdmin)
 router.post("/login", loginAdmin)
-router.post("/logout", verifyJWT(), logoutAdmin)
-router.put("/updateImage",upload.single('imageUrl'), verifyJWT(), updateImage)
+router.post("/logout", logoutAdmin)
+router.put("/updateImage",upload.single('imageUrl'), updateImage)
 
 export default router

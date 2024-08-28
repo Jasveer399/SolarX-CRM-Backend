@@ -5,8 +5,8 @@ import { verifyJWT } from "../middleware/auth.middleware.js";
 const router = Router()
 
 router.post("/", createLead)
-router.get("/getallLeads",verifyJWT(), getAllLeads)
-router.put("/changeCurrentSOL",verifyJWT(), changeCurrentSOLandFinalStatus)
-router.put("/updateLead",verifyJWT(), updateLead)
+router.get("/getallLeads", getAllLeads)
+router.put("/changeCurrentSOL", changeCurrentSOLandFinalStatus)
+router.put("/updateLead", updateLead)
 
 export default router
