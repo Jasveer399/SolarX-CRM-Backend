@@ -23,7 +23,7 @@ app.use(express.static("public"))
 
 app.use(cookieParser())
 
-import routes from "./routes/index.js";
+import routes from "./src/routes/route.js";
 app.use(routes);
 
 app.listen(process.env.PORT || 3000, () => console.log("Server is running on PORT", process.env.PORT || 3000));
