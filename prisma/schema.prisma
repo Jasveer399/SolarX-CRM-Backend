@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  adminType String
+  imageUrl String?
+  created_at DateTime @default(now())
+}
+
+//enum values for Leads model
+enum CurrentSOL {
+  Cold
+  NoResponse
+  CallBack
+  Connected
+}
+enum FinalStatus {
+  Converted
+  InProgress
+  Cold
+  Dead
+}
+
+model Leads {
+  id String @id @default(uuid())
+  mobileNumber String  @unique
+  dateOfVisit String
+  name String
+  city String
+  district String
+  state String
+  sourceOfLead String
+  currentSOL CurrentSOL
+  callerName String
+  assignedTo String
+  finalStatus FinalStatus
+  whatsappUrl String
+  created_at DateTime @default(now())
+}
