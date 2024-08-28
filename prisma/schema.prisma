@@ -53,3 +53,26 @@ model Leads {
   whatsappUrl String
   created_at DateTime @default(now())
 }
+
+
+model Project {
+  id                        String       @id @default(uuid())
+  dateOfLead                String
+  name                      String
+  mobileNumber              String
+  villageCity               String
+  district                  String
+  state                     String
+  dscsSpInds                String
+  pspdlSection              String
+  solarConnectionDemand     Float
+  proposedSolarLoad         Float
+  monthlyBill               String?   
+  monthlyUnitConsumption    String? 
+  positiveNegative          String
+  successRate               String
+  visitStatus               String
+  finalStatus               String
+  noteForLead               String
+  whatsappLink              String
+}
