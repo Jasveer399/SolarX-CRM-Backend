@@ -14,12 +14,12 @@ datasource db {
 }
 
 model Admin {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  adminType String
-  imageUrl String?
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  adminType  String
+  imageUrl   String?
   created_at DateTime @default(now())
 }
 
@@ -30,6 +30,7 @@ enum CurrentSOL {
   CallBack
   Connected
 }
+
 enum FinalStatus {
   Converted
   InProgress
@@ -38,41 +39,40 @@ enum FinalStatus {
 }
 
 model Leads {
-  id String @id @default(uuid())
-  mobileNumber String  @unique
-  dateOfVisit String
-  name String
-  city String
-  district String
-  state String
-  sourceOfLead String
-  currentSOL CurrentSOL
-  callerName String
-  assignedTo String
-  finalStatus FinalStatus
-  whatsappUrl String
-  created_at DateTime @default(now())
+  id           String      @id @default(uuid())
+  mobileNumber String      @unique
+  dateOfVisit  String
+  name         String
+  villageCity  String
+  district     String
+  state        String
+  sourceOfLead String?
+  currentSOL   CurrentSOL?
+  callerName   String?
+  assignedTo   String?
+  finalStatus  FinalStatus?
+  whatsappUrl  String?
+  created_at   DateTime    @default(now())
 }
 
-
 model Project {
-  id                        String       @id @default(uuid())
-  dateOfLead                String
-  name                      String
-  mobileNumber              String
-  villageCity               String
-  district                  String
-  state                     String
-  dscsSpInds                String
-  pspdlSection              String
-  solarConnectionDemand     Float
-  proposedSolarLoad         Float
-  monthlyBill               String?   
-  monthlyUnitConsumption    String? 
-  positiveNegative          String
-  successRate               String
-  visitStatus               String
-  finalStatus               String
-  noteForLead               String
-  whatsappLink              String
+  id                     String  @id @default(uuid())
+  dateOfLead             String
+  name                   String
+  mobileNumber           String
+  villageCity            String
+  district               String
+  state                  String
+  dscsSpInds             String?
+  pspdlSection           String?
+  solarConnectionDemand  Float?
+  proposedSolarLoad      Float?
+  monthlyBill            String?
+  monthlyUnitConsumption String?
+  positiveNegative       String?
+  successRate            String?
+  visitStatus            String?
+  finalStatus            String?
+  noteForLead            String?
+  whatsappLink           String?
 }
