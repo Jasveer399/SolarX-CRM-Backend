@@ -75,7 +75,7 @@ const getAllLeads = async (req, res) => {
   }
 };
 
-const changeCurrentSOLandFinalStatus = async (req, res) => {
+const changeCurrentSOL = async (req, res) => {
   const { leadId, currentsol, finalStatus } = req.body;
   console.log("changeCurrentSOL Req.body =>", req.body);
 
@@ -100,7 +100,6 @@ const changeCurrentSOLandFinalStatus = async (req, res) => {
       },
       data: {
         currentSOL: currentsol,
-        finalStatus: finalStatus,
       },
     });
 
@@ -128,6 +127,63 @@ const changeCurrentSOLandFinalStatus = async (req, res) => {
 
     return res.status(500).json({
       message: "Error while updating current SOL",
+      status: false,
+      error: error.message,
+    });
+  }
+};
+const changeFinalStatus = async (req, res) => {
+  const { leadId, finalStatus } = req.body;
+  console.log("changeCurrentSOL Req.body =>", req.body);
+
+  if (!leadId || typeof leadId !== "string") {
+    return res.status(400).json({
+      message: "Invalid or missing leadId",
+      status: false,
+    });
+  }
+
+  if (!finalStatus) {
+    return res.status(400).json({
+      message: "missing finalStatus value",
+      status: false,
+    });
+  }
+
+  try {
+    const updatedLead = await prisma.leads.update({
+      where: {
+        id: leadId,
+      },
+      data: {
+        finalStatus: finalStatus,
+      },
+    });
+
+    if (!updatedLead) {
+      return res.status(404).json({
+        message: "Lead not found",
+        status: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Final Status updated successfully",
+      status: true,
+      data: updatedLead,
+    });
+  } catch (error) {
+    console.error("Error updating Final Status:", error);
+
+    if (error.code === "P2025") {
+      return res.status(404).json({
+        message: "Lead not found",
+        status: false,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Error while updating Final Status",
       status: false,
       error: error.message,
     });
@@ -209,4 +265,10 @@ const updateLead = async (req, res) => {
   }
 };
 
-export { createLead, getAllLeads, changeCurrentSOLandFinalStatus, updateLead };
+export {
+  createLead,
+  getAllLeads,
+  changeCurrentSOL,
+  updateLead,
+  changeFinalStatus,
+};
