@@ -1,4 +1,5 @@
 import prisma from "../DB/db.config.js";
+import { formatDate } from "../utils/DateFormate.js";
 
 const createLead = async (req, res) => {
   console.log("Req.Body =>", req.body);
@@ -14,7 +15,6 @@ const createLead = async (req, res) => {
     callerName,
     assignedTo,
     finalStatus,
-    whatsappUrl,
   } = req.body;
 
   try {
@@ -31,7 +31,6 @@ const createLead = async (req, res) => {
         callerName,
         assignedTo,
         finalStatus,
-        whatsappUrl,
       },
     });
 
@@ -60,8 +59,11 @@ const createLead = async (req, res) => {
 const getAllLeads = async (req, res) => {
   try {
     const leads = await prisma.leads.findMany();
+    const filterNoConvertedLead = leads.filter(
+      (lead) => lead.finalStatus !== "Converted"
+    );
     return res.status(200).json({
-      data: leads,
+      data: filterNoConvertedLead,
       message: "Leads fetched successfully!!",
       status: true,
     });

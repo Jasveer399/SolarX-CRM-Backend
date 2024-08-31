@@ -34,8 +34,6 @@ enum CurrentSOL {
 enum FinalStatus {
   Converted
   InProgress
-  Cold
-  Dead
 }
 
 model Leads {
@@ -58,8 +56,8 @@ model Leads {
 model Project {
   id                     String  @id @default(uuid())
   dateOfLead             String
-  name                   String
-  mobileNumber           String
+  name                   String  
+  mobileNumber           String  @unique
   villageCity            String
   district               String
   state                  String
