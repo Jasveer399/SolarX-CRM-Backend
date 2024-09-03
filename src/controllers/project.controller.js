@@ -2,7 +2,6 @@ import prisma from "../DB/db.config.js";
 import { formatDate } from "../utils/DateFormate.js";
 
 const createProject = async (req, res) => {
-  console.log("Req.Body =>", req.body);
   const {
     name,
     mobileNumber,
@@ -97,6 +96,7 @@ const createProject = async (req, res) => {
 };
 
 const getAllProject = async (req, res) => {
+  console.log("getAllProject called =>", req.body);
   try {
     const project = await prisma.project.findMany();
     const filterNoConvertedLead = project.filter(
@@ -118,7 +118,6 @@ const getAllProject = async (req, res) => {
 };
 const changeFinalStatus = async (req, res) => {
   const { mobileNumber, finalStatus } = req.body;
-  console.log("changeCurrentSOL Req.body =>", req.body);
 
   if (!mobileNumber) {
     return res.status(400).json({
@@ -184,7 +183,6 @@ const changeFinalStatus = async (req, res) => {
 };
 
 const updateProject = async (req, res) => {
-  console.log("Req.Body =>", req.body);
   const {
     projectId,
     dateOfLead,

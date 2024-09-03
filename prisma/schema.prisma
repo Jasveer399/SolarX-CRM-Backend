@@ -37,8 +37,8 @@ enum FinalStatus {
 }
 
 model Leads {
-  id           String      @id @default(uuid())
-  mobileNumber String      @unique
+  id           String       @id @default(uuid())
+  mobileNumber String       @unique
   dateOfVisit  String
   name         String
   villageCity  String
@@ -50,14 +50,15 @@ model Leads {
   assignedTo   String?
   finalStatus  FinalStatus?
   whatsappUrl  String?
-  created_at   DateTime    @default(now())
+  noteForLead  String?
+  created_at   DateTime     @default(now())
 }
 
 model Project {
-  id                     String  @id @default(uuid())
+  id                     String       @id @default(uuid())
   dateOfLead             String
-  name                   String  
-  mobileNumber           String  @unique
+  name                   String
+  mobileNumber           String       @unique
   villageCity            String
   district               String
   state                  String
@@ -70,7 +71,36 @@ model Project {
   positiveNegative       String?
   successRate            String?
   visitStatus            String?
-  finalStatus            String?
+  finalStatus            FinalStatus?
   noteForLead            String?
   whatsappLink           String?
+}
+
+enum SubSidy {
+  Subsidy
+  NoSubsidy
+}
+
+enum SolarType {
+  Residential
+  Commercial
+  Industrial
+}
+
+model Quotation {
+  id                 String     @id @default(uuid())
+  mobileNumber       String     @unique
+  name               String
+  solarType          SolarType?
+  pspclAccountNumber String?
+  sanLoad            Float?
+  monthlyBill        Float?
+  monthlyConsumption Int?
+  proposedSolarLoad  Float?
+  subsidy            SubSidy?
+  solarPanels        Int?
+  inverter           Float?
+  baseAmount         Float?
+  gst                Float?
+  totalPrice         Float?
 }
