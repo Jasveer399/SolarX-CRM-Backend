@@ -1,42 +1,38 @@
 import prisma from "../DB/db.config.js";
 import { formatDate } from "../utils/DateFormate.js";
 
-const createPayment = async (req, res) => {
+const createSiteVisit = async (req, res) => {
   const {
-    subsidy,
     name,
     villageCity,
     mobileNumber,
     district,
     pspclAccountNumber,
-    paymentDone,
   } = req.body;
   try {
     // Check if Quotation already exists for this mobileNumber
-    const existingPayment = await prisma.payment.findFirst({
-      where: { mobileNumber },
-    });
-    await prisma.quotation.update({
-      where: {
-        mobileNumber,
-      },
+    // const existingPayment = await prisma.payment.findFirst({
+    //   where: { mobileNumber },
+    // });
+    // await prisma.quotation.update({
+    //   where: {
+    //     mobileNumber,
+    //   },
+    //   data: {
+    //     paymentDone: true,
+    //   },
+    // });
+    const createdSiteVisit = await prisma.siteVisit.create({
       data: {
-        paymentDone: true,
-      },
-    });
-    const createdPayment = await prisma.payment.create({
-      data: {
-        subsidy,
         name,
         villageCity,
         mobileNumber,
         district,
         pspclAccountNumber,
-        paymentDone,
       },
     });
 
-    if (!createdPayment) {
+    if (!createdSiteVisit) {
       return res.status(500).json({
         message: "Server Error 500 !!",
         status: false,
@@ -44,35 +40,35 @@ const createPayment = async (req, res) => {
     }
 
     return res.status(201).json({
-      data: createdPayment,
-      message: "Payment Created Successfully !!",
+      data: createdSiteVisit,
+      message: "SiteVisit Created Successfully !!",
       status: true,
     });
     // }
   } catch (error) {
-    console.error("Error in createing a Payment:", error);
+    console.error("Error in createing a SiteVisit:", error);
     return res.status(500).json({
       error: error.message,
-      message: "Error while creating payment !!",
+      message: "Error while creating SiteVisit !!",
       status: false,
     });
   }
 };
 
-const getAllPayments = async (req, res) => {
+const getAllSiteVisit = async (req, res) => {
   try {
-    const payments = await prisma.payment.findMany();
-    const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
+    const siteVisit = await prisma.siteVisit.findMany();
+    // const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
     return res.status(200).json({
-      data: filterQuotation,
-      message: "All payment fetched Successfully!!",
+      data: siteVisit,
+      message: "All SiteVisit fetched Successfully!!",
       status: true,
     });
   } catch (error) {
-    console.error("Error While fetching all Payments:", error);
+    console.error("Error While fetching all siteVisit:", error);
     return res.status(500).json({
       error: error.message,
-      message: "Error while fetching all Payments!!",
+      message: "Error while fetching all siteVisit!!",
       status: false,
     });
   }
@@ -153,4 +149,4 @@ const updatePayment = async (req, res) => {
   }
 };
 
-export { createPayment, getAllPayments, updatePayment };
+export { createSiteVisit, getAllSiteVisit, updatePayment };

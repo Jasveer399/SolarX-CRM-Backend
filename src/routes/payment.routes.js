@@ -10,6 +10,6 @@ const router = Router();
 
 router.post("/createPayment", createPayment);
 router.get("/getAllPayments", getAllPayments);
-router.get("/updatePayment", updatePayment);
+router.put("/updatePayment", updatePayment);
 
 export default router;
