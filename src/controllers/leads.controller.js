@@ -14,6 +14,7 @@ const createLead = async (req, res) => {
     currentSOL,
     callerName,
     assignedTo,
+    noteForLead,
     finalStatus,
   } = req.body;
 
@@ -30,6 +31,7 @@ const createLead = async (req, res) => {
         currentSOL,
         callerName,
         assignedTo,
+        noteForLead,
         finalStatus,
       },
     });
@@ -205,6 +207,7 @@ const updateLead = async (req, res) => {
     callerName,
     assignedTo,
     finalStatus,
+    noteForLead,
     whatsappUrl,
   } = req.body;
   console.log("changeCurrentSOL Req.body =>", req.body);
@@ -233,6 +236,7 @@ const updateLead = async (req, res) => {
         callerName,
         assignedTo,
         finalStatus,
+        noteForLead,
         whatsappUrl,
       },
     });

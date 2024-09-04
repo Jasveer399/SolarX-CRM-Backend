@@ -6,6 +6,8 @@ const createQuotation = async (req, res) => {
   const {
     mobileNumber,
     name,
+    district,
+    villageCity,
     solarType,
     pspclAccountNumber,
     sanLoad,
@@ -24,45 +26,74 @@ const createQuotation = async (req, res) => {
     const existingQuotation = await prisma.quotation.findFirst({
       where: { mobileNumber },
     });
-
-    if (existingQuotation) {
-      return res.status(201).json({
-        message: "Quotation Alrady Exist !!",
-        status: false,
-      });
-    }
-    // Quotation doesn't exist, create new one
-    const createdQuotation = await prisma.quotation.create({
-      data: {
+    const project = await prisma.project.update({
+      where: {
         mobileNumber,
-        name,
-        solarType,
-        pspclAccountNumber,
-        sanLoad,
-        monthlyBill,
-        monthlyConsumption,
-        proposedSolarLoad,
-        subsidy,
-        solarPanels,
-        inverter,
-        baseAmount,
-        gst,
-        totalPrice,
+      },
+      data: {
+        isQuotation: true,
       },
     });
 
-    if (!createdQuotation) {
-      return res.status(500).json({
-        message: "Server Error 500 !!",
-        status: false,
-      });
-    }
+    if (project) {
+      if (existingQuotation) {
+        const updateQuotation = await prisma.quotation.update({
+          where: {
+            mobileNumber,
+          },
+          data: {
+            isQuotation: true,
+          },
+        });
 
-    return res.status(201).json({
-      data: createdQuotation,
-      message: "Quotation Created Successfully !!",
-      status: true,
-    });
+        if (!updateQuotation) {
+          return res.status(500).json({
+            message: "Server Error 500 !!",
+            status: false,
+          });
+        }
+
+        return res.status(201).json({
+          data: updateQuotation,
+          message: "Quotation Change to Prospact Successfully !!",
+          status: true,
+        });
+      } else {
+        const createdQuotation = await prisma.quotation.create({
+          data: {
+            mobileNumber,
+            name,
+            district,
+            villageCity,
+            solarType,
+            pspclAccountNumber,
+            sanLoad,
+            monthlyBill,
+            monthlyConsumption,
+            proposedSolarLoad,
+            subsidy,
+            solarPanels,
+            inverter,
+            baseAmount,
+            gst,
+            totalPrice,
+          },
+        });
+
+        if (!createdQuotation) {
+          return res.status(500).json({
+            message: "Server Error 500 !!",
+            status: false,
+          });
+        }
+
+        return res.status(201).json({
+          data: createdQuotation,
+          message: "Quotation Created Successfully !!",
+          status: true,
+        });
+      }
+    }
   } catch (error) {
     console.error("Error in createQuotation:", error);
     return res.status(500).json({
@@ -76,8 +107,11 @@ const createQuotation = async (req, res) => {
 const getAllQuotations = async (req, res) => {
   try {
     const quotations = await prisma.quotation.findMany();
+    const filterQuotation = quotations.filter(
+      (quo) => quo.isQuotation === true && quo.paymentDone === false
+    );
     return res.status(200).json({
-      data: quotations,
+      data: filterQuotation,
       message: "All Quotations fetched Successfully!!",
       status: true,
     });
@@ -97,6 +131,8 @@ const updateQuotation = async (req, res) => {
     mobileNumber,
     name,
     solarType,
+    district,
+    villageCity,
     pspclAccountNumber,
     sanLoad,
     monthlyBill,
@@ -117,6 +153,8 @@ const updateQuotation = async (req, res) => {
         mobileNumber,
         name,
         solarType,
+        district,
+        villageCity,
         pspclAccountNumber,
         sanLoad,
         monthlyBill,
@@ -130,6 +168,8 @@ const updateQuotation = async (req, res) => {
         totalPrice,
       },
     });
+
+    console.log("updatedQuotation =>", updatedQuotation);
 
     if (!updatedQuotation) {
       return res.status(404).json({
@@ -152,4 +192,4 @@ const updateQuotation = async (req, res) => {
   }
 };
 
-export { createQuotation, getAllQuotations,updateQuotation };
+export { createQuotation, getAllQuotations, updateQuotation };

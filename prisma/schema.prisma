@@ -50,6 +50,7 @@ model Leads {
   assignedTo   String?
   finalStatus  FinalStatus?
   whatsappUrl  String?
+  noteForLead  String?
   created_at   DateTime     @default(now())
 }
 
@@ -72,6 +73,7 @@ model Project {
   visitStatus            String?
   finalStatus            FinalStatus?
   noteForLead            String?
+  isQuotation            Boolean      @default(false)
   whatsappLink           String?
 }
 
@@ -90,6 +92,8 @@ model Quotation {
   id                 String     @id @default(uuid())
   mobileNumber       String     @unique
   name               String
+  district           String
+  villageCity        String?
   solarType          SolarType?
   pspclAccountNumber String?
   sanLoad            Float?
@@ -101,5 +105,49 @@ model Quotation {
   inverter           Float?
   baseAmount         Float?
   gst                Float?
+  isQuotation        Boolean    @default(true)
   totalPrice         Float?
+  paymentDone        Boolean    @default(false)
+}
+
+model Payment {
+  id                    String  @id @default(uuid())
+  subsidy               SubSidy
+  name                  String
+  villageCity           String
+  mobileNumber          String  @unique
+  district              String
+  pspclAccountNumber    String
+  subsidyAmount         Float?
+  netAmount             Float?
+  advancePayment        Float?
+  advancePaymentDate    String?
+  payment1              Float?
+  payment1Date          String?
+  payment2              Float?
+  payment2Date          String?
+  payment3              Float?
+  payment3Date          String?
+  email                 String?
+  totalProjectCost      Float?
+  totalAmountReceived   Float?
+  subsidyAmountReceived Float?
+  paymentDone           Boolean @default(true)
+}
+
+model SiteVisit {
+  id                 String    @id @default(uuid())
+  mobileNumber       String    @unique
+  name               String
+  pspclAccountNumber String
+  district           String
+  villageCity        String
+  subDivision        String?
+  dateOfVisit        String?
+  siteLocation       String?
+  pic1               String?
+  pic2               String?
+  pic3               String?
+  pic4               String?
+  pic5               String?
 }

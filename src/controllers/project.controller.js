@@ -100,7 +100,7 @@ const getAllProject = async (req, res) => {
   try {
     const project = await prisma.project.findMany();
     const filterNoConvertedLead = project.filter(
-      (pro) => pro.finalStatus === "Converted"
+      (pro) => pro.finalStatus === "Converted" && pro.isQuotation === false
     );
     return res.status(200).json({
       data: filterNoConvertedLead,
@@ -250,4 +250,44 @@ const updateProject = async (req, res) => {
     });
   }
 };
-export { createProject, getAllProject, changeFinalStatus, updateProject };
+
+const deleteProject = async (req, res) => {
+  console.log("Delete Project id =>", req.body);
+  try {
+    const { projectId } = req.body;
+    const deletedProject = await prisma.project.delete({
+      where: {
+        id: projectId,
+      },
+    });
+    const deleteLead = await prisma.leads.deleteMany({
+      where: {
+        mobileNumber: deletedProject.mobileNumber,
+      },
+    });
+    if (!deletedProject && !deleteLead) {
+      return res.status(404).json({
+        message: "Project OR Lead not found",
+        status: false,
+      });
+    }
+    return res.status(200).json({
+      message: "Project OR Lead deleted successfully",
+      status: true,
+    });
+  } catch (error) {
+    console.error("Error in deleteProspect:", error);
+    return res.status(500).json({
+      error: error.message,
+      message: "Error while deleting project!!",
+      status: false,
+    });
+  }
+};
+export {
+  createProject,
+  getAllProject,
+  changeFinalStatus,
+  updateProject,
+  deleteProject,
+};
