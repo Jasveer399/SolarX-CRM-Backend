@@ -38,17 +38,17 @@ enum FinalStatus {
 
 model Leads {
   id           String       @id @default(uuid())
-  mobileNumber String       @unique
-  dateOfVisit  String
-  name         String
-  villageCity  String
-  district     String
-  state        String
+  mobileNumber String?       @unique
+  dateOfVisit  String?
+  name         String?
+  villageCity  String?
+  district     String?
+  state        String?
   sourceOfLead String?
-  currentSOL   CurrentSOL?
+  currentSOL   CurrentSOL?  @default(Cold)
   callerName   String?
   assignedTo   String?
-  finalStatus  FinalStatus?
+  finalStatus  FinalStatus?   @default(InProgress)
   whatsappUrl  String?
   noteForLead  String?
   created_at   DateTime     @default(now())

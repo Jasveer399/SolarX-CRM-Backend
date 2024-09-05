@@ -2,13 +2,8 @@ import prisma from "../DB/db.config.js";
 import { formatDate } from "../utils/DateFormate.js";
 
 const createSiteVisit = async (req, res) => {
-  const {
-    name,
-    villageCity,
-    mobileNumber,
-    district,
-    pspclAccountNumber,
-  } = req.body;
+  const { name, villageCity, mobileNumber, district, pspclAccountNumber } =
+    req.body;
   try {
     // Check if Quotation already exists for this mobileNumber
     // const existingPayment = await prisma.payment.findFirst({
@@ -74,55 +69,41 @@ const getAllSiteVisit = async (req, res) => {
   }
 };
 
-const updatePayment = async (req, res) => {
+const updateSiteVisit = async (req, res) => {
   const {
     id,
     mobileNumber,
     name,
-    email,
     district,
     villageCity,
-    subsidy,
     pspclAccountNumber,
-    subsidyAmount,
-    netAmount,
-    advancePayment,
-    advancePaymentDate,
-    payment1,
-    payment1Date,
-    payment2,
-    payment2Date,
-    payment3,
-    payment3Date,
-    totalProjectCost,
-    totalAmountReceived,
-    subsidyAmountReceived,
+    subDivision,
+    dateOfVisit,
+    siteLocation,
+    pic1,
+    pic2,
+    pic3,
+    pic4,
+    pic5,
   } = req.body;
 
   try {
-    const updatedPayment = await prisma.payment.update({
+    const updatedPayment = await prisma.siteVisit.update({
       where: { id },
       data: {
         mobileNumber,
         name,
-        email,
         district,
         villageCity,
-        subsidy,
         pspclAccountNumber,
-        subsidyAmount,
-        netAmount,
-        advancePayment,
-        advancePaymentDate,
-        payment1,
-        payment1Date,
-        payment2,
-        payment2Date,
-        payment3,
-        payment3Date,
-        totalProjectCost,
-        totalAmountReceived,
-        subsidyAmountReceived,
+        subDivision,
+        dateOfVisit,
+        siteLocation,
+        pic1,
+        pic2,
+        pic3,
+        pic4,
+        pic5,
       },
     });
 
@@ -149,4 +130,4 @@ const updatePayment = async (req, res) => {
   }
 };
 
-export { createSiteVisit, getAllSiteVisit, updatePayment };
+export { createSiteVisit, getAllSiteVisit, updateSiteVisit };

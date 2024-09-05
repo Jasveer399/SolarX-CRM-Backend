@@ -271,10 +271,94 @@ const updateLead = async (req, res) => {
   }
 };
 
+const BATCH_SIZE = 100; // Adjust this value based on your system's capabilities
+
+const processBatch = async (batch) => {
+  return await Promise.all(
+    batch.map(async (lead) => {
+      try {
+        return await prisma.leads.upsert({
+          where: { mobileNumber: lead.mobileNumber },
+          update: {
+            dateOfVisit: lead.dateOfVisit,
+            name: lead.name,
+            villageCity: lead.villageCity,
+            district: lead.district,
+            state: lead.state,
+          },
+          create: {
+            mobileNumber: lead.mobileNumber,
+            dateOfVisit: lead.dateOfVisit,
+            name: lead.name,
+            villageCity: lead.villageCity,
+            district: lead.district,
+            state: lead.state,
+          },
+        });
+      } catch (error) {
+        console.error(
+          `Error processing lead with mobile number ${lead.mobileNumber}:`,
+          error
+        );
+        return {
+          error: true,
+          mobileNumber: lead.mobileNumber,
+          message: error.message,
+        };
+      }
+    })
+  );
+};
+
+const CreateLeadsFromExcel = async (req, res) => {
+  try {
+    const { leadsData } = req.body;
+
+    if (!Array.isArray(leadsData) || leadsData.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Invalid input: Expected an array of leads" });
+    }
+
+    const results = [];
+    const errors = [];
+
+    for (let i = 0; i < leadsData.length; i += BATCH_SIZE) {
+      const batch = leadsData.slice(i, i + BATCH_SIZE);
+      const batchResults = await processBatch(batch);
+
+      batchResults.forEach((result) => {
+        if (result.error) {
+          errors.push(result);
+        } else {
+          results.push(result);
+        }
+      });
+
+      // Optional: Add a small delay between batches to prevent overwhelming the database
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    return res.status(201).json({
+      message: "Leads processing completed",
+      count: results.length,
+      data: results,
+      errors: errors,
+      status: true,
+    });
+  } catch (error) {
+    console.error("Error processing leads:", error);
+    res.status(500).json({ error: "An error occurred while processing leads" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
 export {
   createLead,
   getAllLeads,
   changeCurrentSOL,
   updateLead,
   changeFinalStatus,
+  CreateLeadsFromExcel,
 };
