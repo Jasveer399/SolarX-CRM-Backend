@@ -61,10 +61,16 @@ const createPayment = async (req, res) => {
 
 const getAllPayments = async (req, res) => {
   try {
-    const payments = await prisma.payment.findMany();
-    const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
+    const payments = await prisma.payment.findMany({
+      where: {
+        AND: [{ paymentDone: true }, { sitevist: false }],
+      },
+      orderBy: [{ createdAt: "desc" }],
+    });
+    // const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
+
     return res.status(200).json({
-      data: filterQuotation,
+      data: payments,
       message: "All payment fetched Successfully!!",
       status: true,
     });

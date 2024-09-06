@@ -1,22 +1,19 @@
 import prisma from "../DB/db.config.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { formatDate } from "../utils/DateFormate.js";
-
+import fs from "fs";
 const createSiteVisit = async (req, res) => {
   const { name, villageCity, mobileNumber, district, pspclAccountNumber } =
     req.body;
   try {
-    // Check if Quotation already exists for this mobileNumber
-    // const existingPayment = await prisma.payment.findFirst({
-    //   where: { mobileNumber },
-    // });
-    // await prisma.quotation.update({
-    //   where: {
-    //     mobileNumber,
-    //   },
-    //   data: {
-    //     paymentDone: true,
-    //   },
-    // });
+    await prisma.payment.update({
+      where: {
+        mobileNumber,
+      },
+      data: {
+        sitevist: true,
+      },
+    });
     const createdSiteVisit = await prisma.siteVisit.create({
       data: {
         name,
@@ -52,7 +49,10 @@ const createSiteVisit = async (req, res) => {
 
 const getAllSiteVisit = async (req, res) => {
   try {
-    const siteVisit = await prisma.siteVisit.findMany();
+    const siteVisit = await prisma.siteVisit.findMany({
+      where: { sitevist: true },
+      orderBy: { createdAt: "desc" },
+    });
     // const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
     return res.status(200).json({
       data: siteVisit,
@@ -70,6 +70,7 @@ const getAllSiteVisit = async (req, res) => {
 };
 
 const updateSiteVisit = async (req, res) => {
+  console.log("updateSiteVisit =>", req.body);
   const {
     id,
     mobileNumber,
@@ -80,11 +81,6 @@ const updateSiteVisit = async (req, res) => {
     subDivision,
     dateOfVisit,
     siteLocation,
-    pic1,
-    pic2,
-    pic3,
-    pic4,
-    pic5,
   } = req.body;
 
   try {
@@ -99,11 +95,6 @@ const updateSiteVisit = async (req, res) => {
         subDivision,
         dateOfVisit,
         siteLocation,
-        pic1,
-        pic2,
-        pic3,
-        pic4,
-        pic5,
       },
     });
 
@@ -129,5 +120,69 @@ const updateSiteVisit = async (req, res) => {
     });
   }
 };
+const updateSiteViewImage = async (req, res) => {
+  try {
+    const { id, picField } = req.body;
+    const siteVisitImageLocalPath = req.file?.path;
 
-export { createSiteVisit, getAllSiteVisit, updateSiteVisit };
+    console.log("Request Body =>", req.body);
+    console.log("siteVisitImageLocalPath =>", siteVisitImageLocalPath);
+
+    if (!siteVisitImageLocalPath) {
+      return res.status(400).json({
+        message: "Image not found !!",
+        status: false,
+      });
+    }
+
+    if (!["pic1", "pic2", "pic3", "pic4", "pic5"].includes(picField)) {
+      return res.status(400).json({
+        message: "Invalid picture field specified",
+        status: false,
+      });
+    }
+
+    const siteImage = await uploadOnCloudinary(siteVisitImageLocalPath);
+
+    if (!siteImage) {
+      return res.status(500).json({
+        message:
+          "Error while uploading image on cloudinary. Try Again Later !!",
+        status: false,
+      });
+    }
+
+    const updatedSiteVisitData = await prisma.siteVisit.update({
+      where: {
+        id: id,
+      },
+      data: {
+        [picField]: siteImage,
+      },
+    });
+
+    fs.unlinkSync(siteVisitImageLocalPath);
+
+    return res.status(200).json({
+      data: {
+        [picField]: siteImage,
+      },
+      message: "Site Visit Image Updated Successfully !!",
+      status: true,
+    });
+  } catch (error) {
+    console.error("Error in updateSiteViewImage:", error);
+    return res.status(500).json({
+      error: error.message,
+      message: "Error while updating image !!",
+      status: false,
+    });
+  }
+};
+
+export {
+  createSiteVisit,
+  getAllSiteVisit,
+  updateSiteVisit,
+  updateSiteViewImage,
+};

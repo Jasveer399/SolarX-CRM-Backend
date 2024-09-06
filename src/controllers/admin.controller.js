@@ -198,7 +198,6 @@ const updateImage = async (req, res) => {
         status: false,
       });
     }
-    console.log(avatarLocalPath);
     const avatar = await uploadOnCloudinary(avatarLocalPath);
 
     if (!avatar) {

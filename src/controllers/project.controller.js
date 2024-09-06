@@ -98,12 +98,17 @@ const createProject = async (req, res) => {
 const getAllProject = async (req, res) => {
   console.log("getAllProject called =>", req.body);
   try {
-    const project = await prisma.project.findMany();
-    const filterNoConvertedLead = project.filter(
-      (pro) => pro.finalStatus === "Converted" && pro.isQuotation === false
-    );
+    const project = await prisma.project.findMany({
+      where: {
+        AND: [{ finalStatus: "Converted" }, { isQuotation: false }],
+      },
+      orderBy: [{ createdAt: "desc" }],
+    });
+    // const filterNoConvertedLead = project.filter(
+    //   (pro) => pro.finalStatus === "Converted" && pro.isQuotation === false
+    // );
     return res.status(200).json({
-      data: filterNoConvertedLead,
+      data: project,
       message: "Projects fetched successfully!!",
       status: true,
     });

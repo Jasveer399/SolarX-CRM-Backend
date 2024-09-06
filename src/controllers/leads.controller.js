@@ -60,12 +60,15 @@ const createLead = async (req, res) => {
 
 const getAllLeads = async (req, res) => {
   try {
-    const leads = await prisma.leads.findMany();
-    const filterNoConvertedLead = leads.filter(
-      (lead) => lead.finalStatus !== "Converted"
-    );
+    const leads = await prisma.leads.findMany({
+      where: {
+        OR: [{ finalStatus: "InProgress" }, { finalStatus: null }],
+      },
+      orderBy: [{ createdAt: "desc" }],
+    });
+    console.log("All Leads =>", leads);
     return res.status(200).json({
-      data: filterNoConvertedLead,
+      data: leads,
       message: "Leads fetched successfully!!",
       status: true,
     });

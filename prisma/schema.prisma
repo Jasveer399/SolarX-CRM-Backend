@@ -38,7 +38,7 @@ enum FinalStatus {
 
 model Leads {
   id           String       @id @default(uuid())
-  mobileNumber String?       @unique
+  mobileNumber String?      @unique
   dateOfVisit  String?
   name         String?
   villageCity  String?
@@ -48,10 +48,10 @@ model Leads {
   currentSOL   CurrentSOL?  @default(Cold)
   callerName   String?
   assignedTo   String?
-  finalStatus  FinalStatus?   @default(InProgress)
+  finalStatus  FinalStatus? @default(InProgress)
   whatsappUrl  String?
   noteForLead  String?
-  created_at   DateTime     @default(now())
+  createdAt    DateTime     @default(now())
 }
 
 model Project {
@@ -75,6 +75,7 @@ model Project {
   noteForLead            String?
   isQuotation            Boolean      @default(false)
   whatsappLink           String?
+  createdAt              DateTime     @default(now())
 }
 
 enum SubSidy {
@@ -108,14 +109,15 @@ model Quotation {
   isQuotation        Boolean    @default(true)
   totalPrice         Float?
   paymentDone        Boolean    @default(false)
+  createdAt          DateTime   @default(now())
 }
 
 model Payment {
-  id                    String  @id @default(uuid())
+  id                    String   @id @default(uuid())
   subsidy               SubSidy
   name                  String
   villageCity           String
-  mobileNumber          String  @unique
+  mobileNumber          String   @unique
   district              String
   pspclAccountNumber    String
   subsidyAmount         Float?
@@ -132,12 +134,14 @@ model Payment {
   totalProjectCost      Float?
   totalAmountReceived   Float?
   subsidyAmountReceived Float?
-  paymentDone           Boolean @default(true)
+  paymentDone           Boolean  @default(true)
+  sitevist              Boolean  @default(false)
+  createdAt             DateTime @default(now())
 }
 
 model SiteVisit {
-  id                 String    @id @default(uuid())
-  mobileNumber       String    @unique
+  id                 String   @id @default(uuid())
+  mobileNumber       String   @unique
   name               String
   pspclAccountNumber String
   district           String
@@ -150,4 +154,6 @@ model SiteVisit {
   pic3               String?
   pic4               String?
   pic5               String?
+  sitevist           Boolean  @default(true)
+  createdAt          DateTime @default(now())
 }

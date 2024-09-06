@@ -106,12 +106,17 @@ const createQuotation = async (req, res) => {
 
 const getAllQuotations = async (req, res) => {
   try {
-    const quotations = await prisma.quotation.findMany();
-    const filterQuotation = quotations.filter(
-      (quo) => quo.isQuotation === true && quo.paymentDone === false
-    );
+    const quotations = await prisma.quotation.findMany({
+      where: {
+        AND: [{ paymentDone: false }, { isQuotation: true }],
+      },
+      orderBy: [{ createdAt: "desc" }],
+    });
+    // const filterQuotation = quotations.filter(
+    //   (quo) => quo.isQuotation === true && quo.paymentDone === false
+    // );
     return res.status(200).json({
-      data: filterQuotation,
+      data: quotations,
       message: "All Quotations fetched Successfully!!",
       status: true,
     });
