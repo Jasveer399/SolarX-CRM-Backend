@@ -37,21 +37,22 @@ enum FinalStatus {
 }
 
 model Leads {
-  id           String       @id @default(uuid())
-  mobileNumber String?      @unique
-  dateOfVisit  String?
-  name         String?
-  villageCity  String?
-  district     String?
-  state        String?
-  sourceOfLead String?
-  currentSOL   CurrentSOL?  @default(Cold)
-  callerName   String?
-  assignedTo   String?
-  finalStatus  FinalStatus? @default(InProgress)
-  whatsappUrl  String?
-  noteForLead  String?
-  createdAt    DateTime     @default(now())
+  id                 String       @id @default(uuid())
+  mobileNumber       String?      @unique
+  dateOfVisit        String?
+  name               String?
+  villageCity        String?
+  district           String?
+  state              String?
+  sourceOfLead       String?
+  currentSOL         CurrentSOL?  @default(Cold)
+  callerName         String?
+  assignedTo         String?
+  finalStatus        FinalStatus? @default(InProgress)
+  whatsappUrl        String?
+  noteForLead        String?
+  isConvertToProject Boolean      @default(false)
+  createdAt          DateTime     @default(now())
 }
 
 model Project {
@@ -74,6 +75,7 @@ model Project {
   finalStatus            FinalStatus?
   noteForLead            String?
   isQuotation            Boolean      @default(false)
+  isConvertToProject     Boolean      @default(true)
   whatsappLink           String?
   createdAt              DateTime     @default(now())
 }
@@ -107,9 +109,29 @@ model Quotation {
   baseAmount         Float?
   gst                Float?
   isQuotation        Boolean    @default(true)
+  sitevist           Boolean    @default(false)
   totalPrice         Float?
-  paymentDone        Boolean    @default(false)
   createdAt          DateTime   @default(now())
+}
+
+model SiteVisit {
+  id                 String   @id @default(uuid())
+  mobileNumber       String   @unique
+  name               String
+  pspclAccountNumber String
+  district           String
+  villageCity        String
+  subDivision        String?
+  dateOfVisit        String?
+  siteLocation       String?
+  pic1               String?
+  pic2               String?
+  pic3               String?
+  pic4               String?
+  pic5               String?
+  sitevist           Boolean  @default(true)
+  paymentDone        Boolean  @default(false)
+  createdAt          DateTime @default(now())
 }
 
 model Payment {
@@ -135,25 +157,5 @@ model Payment {
   totalAmountReceived   Float?
   subsidyAmountReceived Float?
   paymentDone           Boolean  @default(true)
-  sitevist              Boolean  @default(false)
   createdAt             DateTime @default(now())
-}
-
-model SiteVisit {
-  id                 String   @id @default(uuid())
-  mobileNumber       String   @unique
-  name               String
-  pspclAccountNumber String
-  district           String
-  villageCity        String
-  subDivision        String?
-  dateOfVisit        String?
-  siteLocation       String?
-  pic1               String?
-  pic2               String?
-  pic3               String?
-  pic4               String?
-  pic5               String?
-  sitevist           Boolean  @default(true)
-  createdAt          DateTime @default(now())
 }

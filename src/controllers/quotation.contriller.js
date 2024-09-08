@@ -45,7 +45,6 @@ const createQuotation = async (req, res) => {
             isQuotation: true,
           },
         });
-
         if (!updateQuotation) {
           return res.status(500).json({
             message: "Server Error 500 !!",
@@ -108,13 +107,10 @@ const getAllQuotations = async (req, res) => {
   try {
     const quotations = await prisma.quotation.findMany({
       where: {
-        AND: [{ paymentDone: false }, { isQuotation: true }],
+        AND: [{ sitevist: false }, { isQuotation: true }],
       },
       orderBy: [{ createdAt: "desc" }],
     });
-    // const filterQuotation = quotations.filter(
-    //   (quo) => quo.isQuotation === true && quo.paymentDone === false
-    // );
     return res.status(200).json({
       data: quotations,
       message: "All Quotations fetched Successfully!!",

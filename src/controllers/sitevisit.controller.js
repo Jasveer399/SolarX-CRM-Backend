@@ -6,7 +6,7 @@ const createSiteVisit = async (req, res) => {
   const { name, villageCity, mobileNumber, district, pspclAccountNumber } =
     req.body;
   try {
-    await prisma.payment.update({
+    await prisma.quotation.update({
       where: {
         mobileNumber,
       },

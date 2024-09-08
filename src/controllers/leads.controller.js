@@ -62,7 +62,7 @@ const getAllLeads = async (req, res) => {
   try {
     const leads = await prisma.leads.findMany({
       where: {
-        OR: [{ finalStatus: "InProgress" }, { finalStatus: null }],
+        OR: [{ finalStatus: "InProgress" }, { finalStatus: null },{isConvertToProject:false}],
       },
       orderBy: [{ createdAt: "desc" }],
     });
@@ -164,6 +164,7 @@ const changeFinalStatus = async (req, res) => {
       },
       data: {
         finalStatus: finalStatus,
+        isConvertToProject: true,
       },
     });
 

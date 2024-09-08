@@ -22,8 +22,6 @@ const createProject = async (req, res) => {
     whatsappLink,
   } = req.body;
   const date = formatDate(new Date());
-  console.log("Formatted Lead Date >", date);
-
   try {
     let project = await prisma.project.findUnique({
       where: {
@@ -32,13 +30,13 @@ const createProject = async (req, res) => {
     });
 
     if (project) {
-      // Project exists, update finalStatus
       project = await prisma.project.update({
         where: {
           mobileNumber,
         },
         data: {
           finalStatus,
+          isConvertToProject: true,
         },
       });
 
@@ -96,17 +94,13 @@ const createProject = async (req, res) => {
 };
 
 const getAllProject = async (req, res) => {
-  console.log("getAllProject called =>", req.body);
   try {
     const project = await prisma.project.findMany({
       where: {
-        AND: [{ finalStatus: "Converted" }, { isQuotation: false }],
+        AND: [{ isConvertToProject: true }, { isQuotation: false }],
       },
       orderBy: [{ createdAt: "desc" }],
     });
-    // const filterNoConvertedLead = project.filter(
-    //   (pro) => pro.finalStatus === "Converted" && pro.isQuotation === false
-    // );
     return res.status(200).json({
       data: project,
       message: "Projects fetched successfully!!",
@@ -147,27 +141,17 @@ const changeFinalStatus = async (req, res) => {
         finalStatus: finalStatus,
       },
     });
-    const updatedLeds = await prisma.leads.update({
-      where: {
-        mobileNumber: mobileNumber,
-      },
-      data: {
-        finalStatus: finalStatus,
-      },
-    });
-
-    if (!updatedProject && !updatedLeds) {
+    if (!updatedProject) {
       return res.status(404).json({
-        message: "Lead not found",
+        message: "Prospect not found",
         status: false,
       });
     }
 
     return res.status(200).json({
-      message: "Final Status updated successfully",
+      message: `Final Status updated successfully TO ${finalStatus}`,
       status: true,
       updatedProject: updatedProject,
-      updatedLeads: updatedLeds,
     });
   } catch (error) {
     console.error("Error updating Final Status:", error);
@@ -183,6 +167,49 @@ const changeFinalStatus = async (req, res) => {
       message: "Error while updating Final Status",
       status: false,
       error: error.message,
+    });
+  }
+};
+
+const changeProspectToLeads = async (req, res) => {
+  const { mobileNumber } = req.body;
+  try {
+    const updatedLead = await prisma.leads.update({
+      where: {
+        mobileNumber: mobileNumber,
+      },
+      data: {
+        isConvertToProject: false,
+        finalStatus:"InProgress"
+      },
+    });
+    if (updatedLead) {
+      const updatedProject = await prisma.project.update({
+        where: {
+          mobileNumber: mobileNumber,
+        },
+        data: {
+          isConvertToProject: false,
+        },
+      });
+      if (!updatedProject) {
+        return res.status(404).json({
+          message: "Prospect not found",
+          status: false,
+        });
+      }
+      return res.status(200).json({
+        message: "Prospect converted to Lead successfully",
+        status: true,
+        updatedProject: updatedProject,
+      });
+    }
+  } catch (error) {
+    console.error("Error in changeProspectToLeads:", error);
+    return res.status(500).json({
+      error: error.message,
+      message: "Error while converting prospect to Lead!!",
+      status: false,
     });
   }
 };
@@ -295,4 +322,5 @@ export {
   changeFinalStatus,
   updateProject,
   deleteProject,
+  changeProspectToLeads,
 };
