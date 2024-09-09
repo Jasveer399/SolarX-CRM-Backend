@@ -100,7 +100,7 @@ model Quotation {
   assignedTo         String
   villageCity        String?
   solarType          SolarType?
-  pspclAccountNumber String?
+  pspdlSection       String?
   sanLoad            Float?
   monthlyBill        Float?
   monthlyConsumption Int?
@@ -117,25 +117,25 @@ model Quotation {
 }
 
 model SiteVisit {
-  id                 String   @id @default(uuid())
-  mobileNumber       String   @unique
-  name               String
-  pspclAccountNumber String
-  district           String
-  villageCity        String
-  assignedTo         String //Visited BY
-  subsidy            SubSidy?
-  subDivision        String?
-  dateOfVisit        String?
-  siteLocation       String?
-  pic1               String?
-  pic2               String?
-  pic3               String?
-  pic4               String?
-  pic5               String?
-  sitevist           Boolean  @default(true)
-  paymentDone        Boolean  @default(false)
-  createdAt          DateTime @default(now())
+  id           String   @id @default(uuid())
+  mobileNumber String   @unique
+  name         String
+  pspdlSection String
+  district     String
+  villageCity  String
+  assignedTo   String //Visited BY
+  subsidy      SubSidy?
+  subDivision  String?
+  dateOfVisit  String?
+  siteLocation String?
+  pic1         String?
+  pic2         String?
+  pic3         String?
+  pic4         String?
+  pic5         String?
+  sitevist     Boolean  @default(true)
+  paymentDone  Boolean  @default(false)
+  createdAt    DateTime @default(now())
 }
 
 model Payment {
@@ -145,7 +145,7 @@ model Payment {
   villageCity           String
   mobileNumber          String   @unique
   district              String
-  pspclAccountNumber    String
+  pspdlSection          String
   subsidyAmount         Float?
   netAmount             Float?
   advancePayment        Float?

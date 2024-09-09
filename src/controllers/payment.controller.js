@@ -8,7 +8,7 @@ const createPayment = async (req, res) => {
     villageCity,
     mobileNumber,
     district,
-    pspclAccountNumber,
+    pspdlSection,
     paymentDone,
   } = req.body;
   try {
@@ -32,7 +32,7 @@ const createPayment = async (req, res) => {
           villageCity,
           mobileNumber,
           district,
-          pspclAccountNumber,
+          pspdlSection,
           paymentDone,
         },
       });
@@ -95,7 +95,7 @@ const updatePayment = async (req, res) => {
     district,
     villageCity,
     subsidy,
-    pspclAccountNumber,
+    pspdlSection,
     subsidyAmount,
     netAmount,
     advancePayment,
@@ -121,7 +121,7 @@ const updatePayment = async (req, res) => {
         district,
         villageCity,
         subsidy,
-        pspclAccountNumber,
+        pspdlSection,
         subsidyAmount,
         netAmount,
         advancePayment,
