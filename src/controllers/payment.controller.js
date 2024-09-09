@@ -13,10 +13,10 @@ const createPayment = async (req, res) => {
   } = req.body;
   try {
     // Check if Quotation already exists for this mobileNumber
-    const existingPayment = await prisma.payment.findFirst({
-      where: { mobileNumber },
-    });
-    await prisma.quotation.update({
+    // const existingPayment = await prisma.payment.findFirst({
+    //   where: { mobileNumber },
+    // });
+   const siteVisitUpdated = await prisma.siteVisit.update({
       where: {
         mobileNumber,
       },
@@ -24,30 +24,32 @@ const createPayment = async (req, res) => {
         paymentDone: true,
       },
     });
-    const createdPayment = await prisma.payment.create({
-      data: {
-        subsidy,
-        name,
-        villageCity,
-        mobileNumber,
-        district,
-        pspclAccountNumber,
-        paymentDone,
-      },
-    });
+    if (siteVisitUpdated) {
+      const createdPayment = await prisma.payment.create({
+        data: {
+          subsidy,
+          name,
+          villageCity,
+          mobileNumber,
+          district,
+          pspclAccountNumber,
+          paymentDone,
+        },
+      });
 
-    if (!createdPayment) {
-      return res.status(500).json({
-        message: "Server Error 500 !!",
-        status: false,
+      if (!createdPayment) {
+        return res.status(500).json({
+          message: "Server Error 500 !!",
+          status: false,
+        });
+      }
+
+      return res.status(201).json({
+        data: createdPayment,
+        message: "Payment Created Successfully !!",
+        status: true,
       });
     }
-
-    return res.status(201).json({
-      data: createdPayment,
-      message: "Payment Created Successfully !!",
-      status: true,
-    });
     // }
   } catch (error) {
     console.error("Error in createing a Payment:", error);
@@ -63,7 +65,7 @@ const getAllPayments = async (req, res) => {
   try {
     const payments = await prisma.payment.findMany({
       where: {
-        AND: [{ paymentDone: true }, { sitevist: false }],
+        AND: [{ paymentDone: true }],
       },
       orderBy: [{ createdAt: "desc" }],
     });

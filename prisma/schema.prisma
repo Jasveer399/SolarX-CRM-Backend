@@ -63,6 +63,7 @@ model Project {
   villageCity            String
   district               String
   state                  String
+  assignedTo             String
   dscsSpInds             String?
   pspdlSection           String?
   solarConnectionDemand  Float?
@@ -96,6 +97,7 @@ model Quotation {
   mobileNumber       String     @unique
   name               String
   district           String
+  assignedTo         String
   villageCity        String?
   solarType          SolarType?
   pspclAccountNumber String?
@@ -121,6 +123,8 @@ model SiteVisit {
   pspclAccountNumber String
   district           String
   villageCity        String
+  assignedTo         String //Visited BY
+  subsidy            SubSidy?
   subDivision        String?
   dateOfVisit        String?
   siteLocation       String?

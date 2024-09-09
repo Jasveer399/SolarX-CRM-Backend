@@ -3,8 +3,15 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { formatDate } from "../utils/DateFormate.js";
 import fs from "fs";
 const createSiteVisit = async (req, res) => {
-  const { name, villageCity, mobileNumber, district, pspclAccountNumber } =
-    req.body;
+  const {
+    name,
+    villageCity,
+    mobileNumber,
+    district,
+    pspclAccountNumber,
+    assignedTo,
+    subsidy,
+  } = req.body;
   try {
     await prisma.quotation.update({
       where: {
@@ -21,6 +28,8 @@ const createSiteVisit = async (req, res) => {
         mobileNumber,
         district,
         pspclAccountNumber,
+        assignedTo,
+        subsidy,
       },
     });
 
@@ -50,7 +59,9 @@ const createSiteVisit = async (req, res) => {
 const getAllSiteVisit = async (req, res) => {
   try {
     const siteVisit = await prisma.siteVisit.findMany({
-      where: { sitevist: true },
+      where: {
+        AND: [{ sitevist: true }, { paymentDone: false }],
+      },
       orderBy: { createdAt: "desc" },
     });
     // const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
@@ -77,6 +88,7 @@ const updateSiteVisit = async (req, res) => {
     name,
     district,
     villageCity,
+    assignedTo,
     pspclAccountNumber,
     subDivision,
     dateOfVisit,
@@ -91,6 +103,7 @@ const updateSiteVisit = async (req, res) => {
         name,
         district,
         villageCity,
+        assignedTo,
         pspclAccountNumber,
         subDivision,
         dateOfVisit,

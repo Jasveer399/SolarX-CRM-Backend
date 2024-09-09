@@ -62,11 +62,14 @@ const getAllLeads = async (req, res) => {
   try {
     const leads = await prisma.leads.findMany({
       where: {
-        OR: [{ finalStatus: "InProgress" }, { finalStatus: null },{isConvertToProject:false}],
+        OR: [
+          { finalStatus: "InProgress" },
+          { finalStatus: null },
+          { isConvertToProject: false },
+        ],
       },
       orderBy: [{ createdAt: "desc" }],
     });
-    console.log("All Leads =>", leads);
     return res.status(200).json({
       data: leads,
       message: "Leads fetched successfully!!",
