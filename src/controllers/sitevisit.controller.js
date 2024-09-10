@@ -62,7 +62,7 @@ const getAllSiteVisit = async (req, res) => {
       where: {
         AND: [{ sitevist: true }, { paymentDone: false }],
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ createdAt: "desc" }, { name: "asc" }],
     });
     // const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
     return res.status(200).json({

@@ -101,7 +101,7 @@ const getAllProject = async (req, res) => {
       where: {
         AND: [{ isConvertToProject: true }, { isQuotation: false }],
       },
-      orderBy: [{ createdAt: "desc" }],
+      orderBy: [{ createdAt: "desc" }, { name: "asc" }],
     });
     return res.status(200).json({
       data: project,

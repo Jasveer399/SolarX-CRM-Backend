@@ -67,7 +67,7 @@ const getAllPayments = async (req, res) => {
       where: {
         AND: [{ paymentDone: true }],
       },
-      orderBy: [{ createdAt: "desc" }],
+      orderBy: [{ createdAt: "desc" }, { name: "asc" }],
     });
     // const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
 

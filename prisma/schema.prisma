@@ -163,3 +163,13 @@ model Payment {
   paymentDone           Boolean  @default(true)
   createdAt             DateTime @default(now())
 }
+
+model StockManagement {
+  id           String  @id @default(uuid())
+  subsidy      SubSidy
+  name         String
+  villageCity  String
+  mobileNumber String  @unique
+  district     String
+  pspdlSection String
+}

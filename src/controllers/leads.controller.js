@@ -68,7 +68,7 @@ const getAllLeads = async (req, res) => {
           { isConvertToProject: false },
         ],
       },
-      orderBy: [{ createdAt: "desc" }],
+      orderBy: [{ createdAt: "desc" },{name: "asc"}],
     });
     return res.status(200).json({
       data: leads,

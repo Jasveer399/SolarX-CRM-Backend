@@ -89,7 +89,7 @@ const getAllQuotations = async (req, res) => {
       where: {
         AND: [{ sitevist: false }, { isQuotation: true }],
       },
-      orderBy: [{ createdAt: "desc" }],
+      orderBy: [{ createdAt: "desc" }, { name: "asc" }],
     });
     return res.status(200).json({
       data: quotations,
