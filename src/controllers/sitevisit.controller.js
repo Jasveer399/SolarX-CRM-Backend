@@ -138,9 +138,6 @@ const updateSiteViewImage = async (req, res) => {
     const { id, picField } = req.body;
     const siteVisitImageLocalPath = req.file?.path;
 
-    console.log("Request Body =>", req.body);
-    console.log("siteVisitImageLocalPath =>", siteVisitImageLocalPath);
-
     if (!siteVisitImageLocalPath) {
       return res.status(400).json({
         message: "Image not found !!",

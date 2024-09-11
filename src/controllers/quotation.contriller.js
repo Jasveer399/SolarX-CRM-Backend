@@ -1,5 +1,7 @@
 import prisma from "../DB/db.config.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { formatDate } from "../utils/DateFormate.js";
+import fs from "fs";
 
 const createQuotation = async (req, res) => {
   console.log("Req.Body =>", req.body);
@@ -10,6 +12,7 @@ const createQuotation = async (req, res) => {
     district,
     assignedTo,
     pspdlSection,
+    solarConnectionDemand,
   } = req.body;
   try {
     // Check if Quotation already exists for this mobileNumber
@@ -56,6 +59,7 @@ const createQuotation = async (req, res) => {
             district,
             assignedTo,
             pspdlSection,
+            solarConnectionDemand,
           },
         });
 
@@ -111,18 +115,14 @@ const updateQuotation = async (req, res) => {
     quotationId,
     mobileNumber,
     name,
-    solarType,
+    solarConnectionDemand,
     district,
     villageCity,
     assignedTo,
     pspdlSection,
     sanLoad,
-    // monthlyBill,
-    // monthlyConsumption,
     proposedSolarLoad,
     subsidy,
-    solarPanels,
-    inverter,
     baseAmount,
     gst,
     totalPrice,
@@ -134,18 +134,14 @@ const updateQuotation = async (req, res) => {
       data: {
         mobileNumber,
         name,
-        solarType,
+        solarConnectionDemand,
         district,
         villageCity,
         assignedTo,
         pspdlSection,
         sanLoad,
-        // monthlyBill,
-        // monthlyConsumption,
         proposedSolarLoad,
         subsidy,
-        solarPanels,
-        inverter,
         baseAmount,
         gst,
         totalPrice,
@@ -175,4 +171,67 @@ const updateQuotation = async (req, res) => {
   }
 };
 
-export { createQuotation, getAllQuotations, updateQuotation };
+const upLoadSiteViewImage = async (req, res) => {
+  console.log("UpLoadSiteViewImage Req.Body =>", req.body);
+  try {
+    const { id, picField } = req.body;
+    const siteVisitImageLocalPath = req.file?.path;
+
+    if (!siteVisitImageLocalPath) {
+      return res.status(400).json({
+        message: "Image not found !!",
+        status: false,
+      });
+    }
+
+    if (!["pic1", "pic2", "pic3", "pic4", "pic5"].includes(picField)) {
+      return res.status(400).json({
+        message: "Invalid picture field specified",
+        status: false,
+      });
+    }
+
+    const siteImage = await uploadOnCloudinary(siteVisitImageLocalPath);
+
+    if (!siteImage) {
+      return res.status(500).json({
+        message:
+          "Error while uploading image on cloudinary. Try Again Later !!",
+        status: false,
+      });
+    }
+
+    const updatedSiteVisitData = await prisma.quotation.update({
+      where: {
+        id: id,
+      },
+      data: {
+        [picField]: siteImage,
+      },
+    });
+
+    fs.unlinkSync(siteVisitImageLocalPath);
+
+    return res.status(200).json({
+      data: {
+        [picField]: siteImage,
+      },
+      message: "Site Visit Image Updated Successfully !!",
+      status: true,
+    });
+  } catch (error) {
+    console.error("Error in updateSiteViewImage:", error);
+    return res.status(500).json({
+      error: error.message,
+      message: "Error while updating image !!",
+      status: false,
+    });
+  }
+};
+
+export {
+  createQuotation,
+  getAllQuotations,
+  updateQuotation,
+  upLoadSiteViewImage,
+};

@@ -55,6 +55,11 @@ model Leads {
   createdAt          DateTime     @default(now())
 }
 
+// enum Phase {
+//   Single
+//   Three
+// }
+
 model Project {
   id                     String       @id @default(uuid())
   dateOfLead             String
@@ -64,9 +69,11 @@ model Project {
   district               String
   state                  String
   assignedTo             String
+  phase                  String?
+  pspclAccountNo         String?
   dscsSpInds             String?
   pspdlSection           String?
-  solarConnectionDemand  Float?
+  solarConnectionDemand  String?
   proposedSolarLoad      Float?
   monthlyBill            String?
   monthlyUnitConsumption String?
@@ -86,34 +93,39 @@ enum SubSidy {
   NoSubsidy
 }
 
-enum SolarType {
-  Residential
-  Commercial
-  Industrial
-}
+// enum SolarType {
+//   Residential
+//   Commercial
+//   Industrial
+// }
 
 model Quotation {
-  id                 String     @id @default(uuid())
-  mobileNumber       String     @unique
-  name               String
-  district           String
-  assignedTo         String
-  villageCity        String?
-  solarType          SolarType?
-  pspdlSection       String?
-  sanLoad            Float?
-  monthlyBill        Float?
-  monthlyConsumption Int?
-  proposedSolarLoad  Float?
-  subsidy            SubSidy?
-  solarPanels        Int?
-  inverter           Float?
-  baseAmount         Float?
-  gst                Float?
-  isQuotation        Boolean    @default(true)
-  sitevist           Boolean    @default(false)
-  totalPrice         Float?
-  createdAt          DateTime   @default(now())
+  id                    String   @id @default(uuid())
+  mobileNumber          String   @unique
+  name                  String
+  district              String
+  assignedTo            String
+  phase                 String?
+  pspclAccountNo        String?
+  villageCity           String?
+  solarConnectionDemand String?
+  pspdlSection          String?
+  sanLoad               Float?
+  monthlyBill           Float?
+  monthlyConsumption    Int?
+  proposedSolarLoad     Float?
+  subsidy               SubSidy?
+  baseAmount            Float?
+  gst                   Float?
+  totalPrice            Float?
+  pic1                  String?
+  pic2                  String?
+  pic3                  String?
+  pic4                  String?
+  pic5                  String?
+  isQuotation           Boolean  @default(true)
+  sitevist              Boolean  @default(false)
+  createdAt             DateTime @default(now())
 }
 
 model SiteVisit {
