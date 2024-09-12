@@ -9,6 +9,7 @@ const createProject = async (req, res) => {
     district,
     state,
     assignedTo,
+    finalStatus,
   } = req.body;
   const date = formatDate(new Date());
   try {
@@ -45,6 +46,7 @@ const createProject = async (req, res) => {
           district,
           state,
           assignedTo,
+          finalStatus,
         },
       });
 

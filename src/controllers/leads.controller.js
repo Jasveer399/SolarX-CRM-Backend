@@ -60,6 +60,7 @@ const createLead = async (req, res) => {
 
 const getAllLeads = async (req, res) => {
   try {
+    const totalLeadsCount = await prisma.leads.findMany();
     const leads = await prisma.leads.findMany({
       where: {
         OR: [
@@ -72,6 +73,7 @@ const getAllLeads = async (req, res) => {
     });
     return res.status(200).json({
       data: leads,
+      totalLeadsCount:totalLeadsCount,
       message: "Leads fetched successfully!!",
       status: true,
     });
