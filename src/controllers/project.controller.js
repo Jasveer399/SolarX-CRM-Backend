@@ -11,6 +11,7 @@ const createProject = async (req, res) => {
     assignedTo,
     finalStatus,
   } = req.body;
+  const newDate = new Date();
   const date = formatDate(new Date());
   try {
     let project = await prisma.project.findUnique({
@@ -27,6 +28,7 @@ const createProject = async (req, res) => {
         data: {
           finalStatus,
           isConvertToProject: true,
+          newTime: newDate,
         },
       });
 
@@ -160,7 +162,7 @@ const changeProspectToLeads = async (req, res) => {
       },
       data: {
         isConvertToProject: false,
-        finalStatus:"InProgress"
+        finalStatus: "InProgress",
       },
     });
     if (updatedLead) {
