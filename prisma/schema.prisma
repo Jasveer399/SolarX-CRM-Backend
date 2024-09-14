@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -125,56 +125,41 @@ model Quotation {
   pic4                  String?
   pic5                  String?
   isQuotation           Boolean  @default(true)
-  sitevist              Boolean  @default(false)
+  consumer              Boolean  @default(false)
+  paymentDone           Boolean  @default(false)
   createdAt             DateTime @default(now())
 }
 
-model SiteVisit {
+model Comsumer {
   id           String   @id @default(uuid())
   mobileNumber String   @unique
   name         String
-  pspdlSection String
   district     String
   villageCity  String
-  assignedTo   String //Visited BY
-  subsidy      SubSidy?
-  subDivision  String?
-  dateOfVisit  String?
-  siteLocation String?
-  pic1         String?
-  pic2         String?
-  pic3         String?
-  pic4         String?
-  pic5         String?
-  sitevist     Boolean  @default(true)
-  paymentDone  Boolean  @default(false)
+  consumer     Boolean  @default(true)
   createdAt    DateTime @default(now())
 }
 
 model Payment {
-  id                    String   @id @default(uuid())
-  subsidy               SubSidy
-  name                  String
-  villageCity           String
-  mobileNumber          String   @unique
-  district              String
-  pspdlSection          String
-  subsidyAmount         Float?
-  netAmount             Float?
-  advancePayment        Float?
-  advancePaymentDate    String?
-  payment1              Float?
-  payment1Date          String?
-  payment2              Float?
-  payment2Date          String?
-  payment3              Float?
-  payment3Date          String?
-  email                 String?
-  totalProjectCost      Float?
-  totalAmountReceived   Float?
-  subsidyAmountReceived Float?
-  paymentDone           Boolean  @default(true)
-  createdAt             DateTime @default(now())
+  id                  String            @id @default(uuid())
+  name                String
+  mobileNumber        String            @unique
+  villageCity         String
+  district            String
+  totalProjectCost    Float?
+  totalAmountReceived Float?
+  pendingAmount       Float?
+  paymentDone         Boolean           @default(true)
+  createdAt           DateTime          @default(now())
+  paymentReceived     PaymentReceived[]
+}
+
+model PaymentReceived {
+  id             String   @id @default(uuid())
+  amountReceived Float
+  date           DateTime
+  payment        Payment  @relation(fields: [paymentId], references: [id])
+  paymentId      String
 }
 
 model StockManagement {

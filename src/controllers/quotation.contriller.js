@@ -13,6 +13,8 @@ const createQuotation = async (req, res) => {
     assignedTo,
     pspdlSection,
     solarConnectionDemand,
+    pspclAccountNo,
+    proposedSolarLoad,
   } = req.body;
   try {
     // Check if Quotation already exists for this mobileNumber
@@ -60,6 +62,8 @@ const createQuotation = async (req, res) => {
             assignedTo,
             pspdlSection,
             solarConnectionDemand,
+            pspclAccountNo,
+            proposedSolarLoad,
           },
         });
 
@@ -91,7 +95,7 @@ const getAllQuotations = async (req, res) => {
   try {
     const quotations = await prisma.quotation.findMany({
       where: {
-        AND: [{ sitevist: false }, { isQuotation: true }],
+        AND: [{ consumer: false }, { isQuotation: true }],
       },
       orderBy: [{ createdAt: "desc" }, { name: "asc" }],
     });

@@ -2,55 +2,29 @@ import prisma from "../DB/db.config.js";
 import { formatDate } from "../utils/DateFormate.js";
 
 const createPayment = async (req, res) => {
-  const {
-    subsidy,
-    name,
-    villageCity,
-    mobileNumber,
-    district,
-    pspdlSection,
-    paymentDone,
-  } = req.body;
+  const { name, mobileNumber, villageCity, district } = req.body;
   try {
-    // Check if Quotation already exists for this mobileNumber
-    // const existingPayment = await prisma.payment.findFirst({
-    //   where: { mobileNumber },
-    // });
-   const siteVisitUpdated = await prisma.siteVisit.update({
-      where: {
-        mobileNumber,
-      },
+    const createdPayment = await prisma.payment.create({
       data: {
-        paymentDone: true,
+        name,
+        mobileNumber,
+        villageCity,
+        district,
       },
     });
-    if (siteVisitUpdated) {
-      const createdPayment = await prisma.payment.create({
-        data: {
-          subsidy,
-          name,
-          villageCity,
-          mobileNumber,
-          district,
-          pspdlSection,
-          paymentDone,
-        },
-      });
 
-      if (!createdPayment) {
-        return res.status(500).json({
-          message: "Server Error 500 !!",
-          status: false,
-        });
-      }
-
-      return res.status(201).json({
-        data: createdPayment,
-        message: "Payment Created Successfully !!",
-        status: true,
+    if (!createdPayment) {
+      return res.status(500).json({
+        message: "Server Error 500 !!",
+        status: false,
       });
     }
-    // }
+
+    return res.status(201).json({
+      data: createdPayment,
+      message: "Payment Created Successfully !!",
+      status: true,
+    });
   } catch (error) {
     console.error("Error in createing a Payment:", error);
     return res.status(500).json({
