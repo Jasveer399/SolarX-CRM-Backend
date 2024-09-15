@@ -155,11 +155,11 @@ model Payment {
 }
 
 model PaymentReceived {
-  id             String   @id @default(uuid())
-  amountReceived Float
-  date           DateTime
-  payment        Payment  @relation(fields: [paymentId], references: [id])
-  paymentId      String
+  id        String   @id @default(uuid())
+  amount    Float
+  date      String
+  payment   Payment  @relation(fields: [paymentId], references: [id])
+  paymentId String
 }
 
 model StockManagement {

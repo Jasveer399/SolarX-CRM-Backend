@@ -42,9 +42,10 @@ const getAllPayments = async (req, res) => {
         AND: [{ paymentDone: true }],
       },
       orderBy: [{ createdAt: "desc" }, { name: "asc" }],
+      include: {
+        paymentReceived: true,
+      },
     });
-    // const filterQuotation = payments.filter((pay) => pay.paymentDone === true);
-
     return res.status(200).json({
       data: payments,
       message: "All payment fetched Successfully!!",
@@ -65,54 +66,48 @@ const updatePayment = async (req, res) => {
     id,
     mobileNumber,
     name,
-    email,
     district,
     villageCity,
-    subsidy,
-    pspdlSection,
-    subsidyAmount,
-    netAmount,
-    advancePayment,
-    advancePaymentDate,
-    payment1,
-    payment1Date,
-    payment2,
-    payment2Date,
-    payment3,
-    payment3Date,
     totalProjectCost,
     totalAmountReceived,
-    subsidyAmountReceived,
+    pendingAmount,
+    paymentReceived,
   } = req.body;
-
+  console.log("Update Payment ::::::::::::::=>", req.body);
   try {
+    let paymentReceivedUpdate = {};
+
+    if (paymentReceived && paymentReceived.length > 0) {
+      paymentReceivedUpdate = {
+        deleteMany: {},
+        create: paymentReceived.map((payment) => ({
+          amount: parseFloat(payment.amount),
+          date: payment.date,
+        })),
+      };
+    } else {
+      // If paymentReceived is empty, we'll just delete existing entries
+      paymentReceivedUpdate = {
+        deleteMany: {},
+      };
+    }
+
     const updatedPayment = await prisma.payment.update({
       where: { id },
       data: {
         mobileNumber,
         name,
-        email,
         district,
         villageCity,
-        subsidy,
-        pspdlSection,
-        subsidyAmount,
-        netAmount,
-        advancePayment,
-        advancePaymentDate,
-        payment1,
-        payment1Date,
-        payment2,
-        payment2Date,
-        payment3,
-        payment3Date,
-        totalProjectCost,
-        totalAmountReceived,
-        subsidyAmountReceived,
+        totalProjectCost: parseFloat(totalProjectCost),
+        totalAmountReceived: parseFloat(totalAmountReceived),
+        pendingAmount: parseFloat(pendingAmount),
+        paymentReceived: paymentReceivedUpdate,
+      },
+      include: {
+        paymentReceived: true,
       },
     });
-
-    console.log("updated Payment =>", updatedPayment);
 
     if (!updatedPayment) {
       return res.status(404).json({
@@ -120,13 +115,14 @@ const updatePayment = async (req, res) => {
         status: false,
       });
     }
+
     return res.status(200).json({
       data: updatedPayment,
       message: "Payment Updated Successfully!!",
       status: true,
     });
   } catch (error) {
-    console.error("Error while updating Payment!:", error);
+    console.error("Error while updating Payment:", error);
     return res.status(500).json({
       error: error.message,
       message: "Error while updating Payment!!",
