@@ -141,33 +141,75 @@ model Comsumer {
 }
 
 model Payment {
-  id                  String            @id @default(uuid())
-  name                String
-  mobileNumber        String            @unique
-  villageCity         String
-  district            String
-  totalProjectCost    Float?
-  totalAmountReceived Float?
-  pendingAmount       Float?
-  paymentDone         Boolean           @default(true)
-  createdAt           DateTime          @default(now())
-  paymentReceived     PaymentReceived[]
+  id                    String            @id @default(uuid())
+  name                  String
+  mobileNumber          String            @unique
+  villageCity           String
+  district              String
+  phase                 String
+  subsidy               SubSidy
+  pspclAccountNo        String
+  pspdlSection          String
+  solarConnectionDemand String
+  totalProjectCost      Float?
+  totalAmountReceived   Float?
+  pendingAmount         Float?
+  paymentStatus         String            @default("Payment Panding")
+  paymentDone           Boolean           @default(true)
+  createdAt             DateTime          @default(now())
+  paymentReceived       PaymentReceived[]
 }
 
 model PaymentReceived {
-  id        String   @id @default(uuid())
+  id        String  @id @default(uuid())
   amount    Float
   date      String
-  payment   Payment  @relation(fields: [paymentId], references: [id])
+  payment   Payment @relation(fields: [paymentId], references: [id])
   paymentId String
 }
 
-model StockManagement {
-  id           String  @id @default(uuid())
-  subsidy      SubSidy
-  name         String
-  villageCity  String
-  mobileNumber String  @unique
-  district     String
-  pspdlSection String
+enum YesNo {
+  Yes
+  No
+}
+
+model Pspcl {
+  id                      String   @id @default(uuid())
+  mobileNumber            String   @unique
+  name                    String
+  villageCity             String
+  district                String
+  subsidy                 String
+  phase                   String
+  pspdlSection            String //this is pspclSanLoad
+  solarConnectionDemand   String
+  dateApplied             String?
+  daysElapsed             String?
+  email                   String?
+  password                String?
+  pspclAccountNumber      String?
+  newAccountNumberNonSap  String?
+  fileSubmittedInOffice   YesNo?
+  processingFeePaid       YesNo?
+  processingFeeAmount     Float?
+  dateOfPayment           String?
+  feasibilityCleared      YesNo?
+  estimatePass            YesNo?
+  estimateFeeDeposit      YesNo?
+  estimateAmount          Float?
+  meterDrawn              YesNo?
+  meterInstalled          YesNo?
+  installationDate        String?
+  consumerPictureUploaded YesNo?
+  panelInverterUploaded   YesNo?
+  pspclInspectionClear    YesNo?
+  chequeUploaded          YesNo?
+  subsidyReleased         YesNo?
+  subsidyReleaseDate      String?
+  pspclDivision           String?
+  subDivisionName         String?
+  raMobileNumber          String?
+  jeMobileNumber          String?
+  sdoMobileNumber         String?
+  createdAt               DateTime @default(now())
 }

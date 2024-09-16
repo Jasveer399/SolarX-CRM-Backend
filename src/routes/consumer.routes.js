@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createConsumer, getAllConsumer } from "../controllers/consumer.controller.js";
+import {
+  createConsumer,
+  getAllConsumer,
+  getAllConsumerDetails,
+} from "../controllers/consumer.controller.js";
 // import { verifyJWT } from "../middleware/auth.middleware.js";
 // import {
 //   createSiteVisit,
@@ -13,6 +17,7 @@ const router = Router();
 
 router.post("/createConsumer", createConsumer);
 router.get("/getAllConsumer", getAllConsumer);
+router.get("/getAllConsumerDetails", getAllConsumerDetails);
 // router.put("/updateSiteVisit", updateSiteVisit);
 // router.put(
 //   "/updateSiteViewImage",

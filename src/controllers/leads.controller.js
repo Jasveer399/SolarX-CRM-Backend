@@ -69,11 +69,11 @@ const getAllLeads = async (req, res) => {
           { isConvertToProject: false },
         ],
       },
-      orderBy: [{ createdAt: "desc" },{name: "asc"}],
+      orderBy: [{ createdAt: "desc" }, { name: "asc" }],
     });
     return res.status(200).json({
       data: leads,
-      totalLeadsCount:totalLeadsCount,
+      totalLeadsCount: totalLeadsCount,
       message: "Leads fetched successfully!!",
       status: true,
     });
@@ -202,6 +202,7 @@ const changeFinalStatus = async (req, res) => {
     });
   }
 };
+
 const updateLead = async (req, res) => {
   const {
     leadId,
@@ -363,6 +364,30 @@ const CreateLeadsFromExcel = async (req, res) => {
   }
 };
 
+const deleteLeads = async (req, res) => {
+  const { leadID } = req.body;
+  console.log("Delete Lead ::::::::::::::=>", req.body);
+  try {
+    const deletedPayment = await prisma.leads.delete({
+      where: {
+        id: leadID,
+      },
+    });
+    return res.status(200).json({
+      data: deletedPayment,
+      message: "Lead Deleted Successfully !!",
+      status: true,
+    });
+  } catch (error) {
+    console.error("Error while deleting Lead:", error);
+    return res.status(500).json({
+      error: error.message,
+      message: "Error while deleting Lead!!",
+      status: false,
+    });
+  }
+};
+
 export {
   createLead,
   getAllLeads,
@@ -370,4 +395,5 @@ export {
   updateLead,
   changeFinalStatus,
   CreateLeadsFromExcel,
+  deleteLeads,
 };

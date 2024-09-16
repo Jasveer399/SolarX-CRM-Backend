@@ -2,7 +2,17 @@ import prisma from "../DB/db.config.js";
 import { formatDate } from "../utils/DateFormate.js";
 
 const createPayment = async (req, res) => {
-  const { name, mobileNumber, villageCity, district } = req.body;
+  const {
+    name,
+    mobileNumber,
+    villageCity,
+    district,
+    phase,
+    subsidy,
+    pspclAccountNo,
+    pspdlSection,
+    solarConnectionDemand,
+  } = req.body;
   try {
     const createdPayment = await prisma.payment.create({
       data: {
@@ -10,6 +20,11 @@ const createPayment = async (req, res) => {
         mobileNumber,
         villageCity,
         district,
+        phase,
+        subsidy,
+        pspclAccountNo,
+        pspdlSection,
+        solarConnectionDemand,
       },
     });
 
@@ -131,4 +146,60 @@ const updatePayment = async (req, res) => {
   }
 };
 
-export { createPayment, getAllPayments, updatePayment };
+const changePaymentStatus = async (req, res) => {
+  const { id, paymentStatus } = req.body;
+
+  if (!id) {
+    return res.status(400).json({
+      message: "missing id",
+      status: false,
+    });
+  }
+
+  if (!paymentStatus) {
+    return res.status(400).json({
+      message: "missing paymentStatus value",
+      status: false,
+    });
+  }
+
+  try {
+    const updatedPayment = await prisma.payment.update({
+      where: {
+        id,
+      },
+      data: {
+        paymentStatus: paymentStatus,
+      },
+    });
+    if (!updatedPayment) {
+      return res.status(404).json({
+        message: "Prospect not found",
+        status: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: `Payment Status updated successfully TO ${paymentStatus}`,
+      status: true,
+      updatedPayment: updatedPayment,
+    });
+  } catch (error) {
+    console.error("Error updating Payment Status:", error);
+
+    if (error.code === "P2025") {
+      return res.status(404).json({
+        message: "Lead not found",
+        status: false,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Error while updating Payment Status",
+      status: false,
+      error: error.message,
+    });
+  }
+};
+
+export { createPayment, getAllPayments, updatePayment, changePaymentStatus };

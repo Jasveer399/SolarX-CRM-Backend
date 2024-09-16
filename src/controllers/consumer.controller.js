@@ -10,7 +10,7 @@ const createConsumer = async (req, res) => {
         consumer: true,
       },
     });
-    const createdConsumer= await prisma.comsumer.create({
+    const createdConsumer = await prisma.comsumer.create({
       data: {
         name,
         villageCity,
@@ -65,117 +65,65 @@ const getAllConsumer = async (req, res) => {
   }
 };
 
-// const updateSiteVisit = async (req, res) => {
-//   console.log("updateSiteVisit =>", req.body);
-//   const {
-//     id,
-//     mobileNumber,
-//     name,
-//     district,
-//     villageCity,
-//     assignedTo,
-//     pspdlSection,
-//     subDivision,
-//     dateOfVisit,
-//     siteLocation,
-//   } = req.body;
+const getAllConsumerDetails = async (req, res) => {
+  const { mobileNumber } = req.query;
+  try {
+    const leadsData = await prisma.leads.findUnique({
+      where: {
+        mobileNumber,
+      },
+      select: {
+        sourceOfLead: true,
+        currentSOL: true,
+        callerName: true,
+        assignedTo: true,
+        noteForLead: true,
+      },
+    });
+    const prospectData = await prisma.project.findUnique({
+      where: {
+        mobileNumber,
+      },
+      select: {
+        pspclAccountNo: true,
+        dscsSpInds: true,
+        pspdlSection: true,
+        solarConnectionDemand: true,
+        phase: true,
+        proposedSolarLoad: true,
+        positiveNegative: true,
+        successRate: true,
+        visitStatus: true,
+        noteForLead: true,
+      },
+    });
+    const quotationData = await prisma.quotation.findUnique({
+      where: {
+        mobileNumber,
+      },
+      select: {
+        subsidy: true,
+        baseAmount: true,
+        gst: true,
+        totalPrice: true,
+      },
+    });
 
-//   try {
-//     const updatedPayment = await prisma.siteVisit.update({
-//       where: { id },
-//       data: {
-//         mobileNumber,
-//         name,
-//         district,
-//         villageCity,
-//         assignedTo,
-//         pspdlSection,
-//         subDivision,
-//         dateOfVisit,
-//         siteLocation,
-//       },
-//     });
-
-//     console.log("updated Payment =>", updatedPayment);
-
-//     if (!updatedPayment) {
-//       return res.status(404).json({
-//         message: "Payment not found",
-//         status: false,
-//       });
-//     }
-//     return res.status(200).json({
-//       data: updatedPayment,
-//       message: "Payment Updated Successfully!!",
-//       status: true,
-//     });
-//   } catch (error) {
-//     console.error("Error while updating Payment!:", error);
-//     return res.status(500).json({
-//       error: error.message,
-//       message: "Error while updating Payment!!",
-//       status: false,
-//     });
-//   }
-// };
-// const updateSiteViewImage = async (req, res) => {
-//   try {
-//     const { id, picField } = req.body;
-//     const siteVisitImageLocalPath = req.file?.path;
-
-//     if (!siteVisitImageLocalPath) {
-//       return res.status(400).json({
-//         message: "Image not found !!",
-//         status: false,
-//       });
-//     }
-
-//     if (!["pic1", "pic2", "pic3", "pic4", "pic5"].includes(picField)) {
-//       return res.status(400).json({
-//         message: "Invalid picture field specified",
-//         status: false,
-//       });
-//     }
-
-//     const siteImage = await uploadOnCloudinary(siteVisitImageLocalPath);
-
-//     if (!siteImage) {
-//       return res.status(500).json({
-//         message:
-//           "Error while uploading image on cloudinary. Try Again Later !!",
-//         status: false,
-//       });
-//     }
-
-//     const updatedSiteVisitData = await prisma.siteVisit.update({
-//       where: {
-//         id: id,
-//       },
-//       data: {
-//         [picField]: siteImage,
-//       },
-//     });
-
-//     fs.unlinkSync(siteVisitImageLocalPath);
-
-//     return res.status(200).json({
-//       data: {
-//         [picField]: siteImage,
-//       },
-//       message: "Site Visit Image Updated Successfully !!",
-//       status: true,
-//     });
-//   } catch (error) {
-//     console.error("Error in updateSiteViewImage:", error);
-//     return res.status(500).json({
-//       error: error.message,
-//       message: "Error while updating image !!",
-//       status: false,
-//     });
-//   }
-// };
-
-export {
-  createConsumer,
-  getAllConsumer,
+    return res.status(200).json({
+      leadsData,
+      prospectData,
+      quotationData,
+      message: "All Consumer Data fetched Successfully!!",
+      status: true,
+    });
+  } catch (error) {
+    console.error("Error While fetching all Consumer Data:", error);
+    return res.status(500).json({
+      error: error.message,
+      message: "Error while fetching all Consumer Data!!",
+      status: false,
+    });
+  }
 };
+
+export { createConsumer, getAllConsumer, getAllConsumerDetails };
