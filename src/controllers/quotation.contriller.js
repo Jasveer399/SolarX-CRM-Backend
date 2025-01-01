@@ -234,10 +234,33 @@ const upLoadSiteViewImage = async (req, res) => {
     });
   }
 };
+const deleteQuotation = async (req, res) => {
+  const { quotationId } = req.params;
+  try {
+    const deletedPayment = await prisma.quotation.delete({
+      where: {
+        id: quotationId,
+      },
+    });
+    return res.status(200).json({
+      data: deletedPayment,
+      message: "Quotation Deleted Successfully !!",
+      status: true,
+    });
+  } catch (error) {
+    console.error("Error while deleting Lead:", error);
+    return res.status(500).json({
+      error: error.message,
+      message: "Error while deleting Lead!!",
+      status: false,
+    });
+  }
+};
 
 export {
   createQuotation,
   getAllQuotations,
   updateQuotation,
   upLoadSiteViewImage,
+  deleteQuotation,
 };

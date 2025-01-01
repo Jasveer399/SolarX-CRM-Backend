@@ -19,9 +19,24 @@ const createLead = async (req, res) => {
   } = req.body;
 
   try {
+    // Validate mobile number if provided
+    if (mobileNumber !== undefined && mobileNumber !== null) {
+      // Check if mobile number already exists
+      const existingLead = await prisma.leads.findUnique({
+        where: { mobileNumber },
+      });
+
+      if (existingLead) {
+        return res.status(400).json({
+          message: "A lead with this mobile number already exists",
+          status: false,
+        });
+      }
+    }
+
     const createdLead = await prisma.leads.create({
       data: {
-        mobileNumber, // Convert to BigInt
+        mobileNumber,
         dateOfVisit,
         name,
         villageCity,
@@ -36,24 +51,44 @@ const createLead = async (req, res) => {
       },
     });
 
-    if (!createdLead) {
-      return res.status(500).json({
-        message: "Server Error 500 !!",
+    return res.status(201).json({
+      data: createdLead,
+      message: "Lead Created Successfully!",
+      status: true,
+    });
+
+  } catch (error) {
+    console.log("Error while creating lead:", error);
+
+    // Handle different types of errors
+    if (error.code === 'P2002') {
+      return res.status(400).json({
+        message: "This mobile number is already registered with another lead",
         status: false,
       });
     }
 
-    return res.status(200).json({
-      data: createdLead,
-      message: "Lead Created Successfully !!",
-      status: true,
-    });
-  } catch (error) {
-    console.log(error);
+    // Handle validation errors for enums (CurrentSOL and FinalStatus)
+    if (error.code === 'P2012') {
+      return res.status(400).json({
+        message: "Invalid value provided for CurrentSOL or FinalStatus",
+        status: false,
+      });
+    }
+
+    // Handle invalid field type errors
+    if (error.code === 'P2019') {
+      return res.status(400).json({
+        message: "One or more field values are in an incorrect format",
+        status: false,
+      });
+    }
+
+    // Default error response
     return res.status(500).json({
-      error: error.message,
-      message: "Error while creating lead !!",
+      message: "Failed to create lead. Please try again later",
       status: false,
+      debug: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
@@ -78,7 +113,7 @@ const getAllLeads = async (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(error);
+    console.log("Error while fetching leads:", error);
     return res.status(500).json({
       error: error.message,
       message: "Error while fetching leads!!",
@@ -366,7 +401,6 @@ const CreateLeadsFromExcel = async (req, res) => {
 
 const deleteLeads = async (req, res) => {
   const { leadID } = req.body;
-  console.log("Delete Lead ::::::::::::::=>", req.body);
   try {
     const deletedPayment = await prisma.leads.delete({
       where: {
