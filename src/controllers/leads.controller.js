@@ -56,12 +56,11 @@ const createLead = async (req, res) => {
       message: "Lead Created Successfully!",
       status: true,
     });
-
   } catch (error) {
     console.log("Error while creating lead:", error);
 
     // Handle different types of errors
-    if (error.code === 'P2002') {
+    if (error.code === "P2002") {
       return res.status(400).json({
         message: "This mobile number is already registered with another lead",
         status: false,
@@ -69,7 +68,7 @@ const createLead = async (req, res) => {
     }
 
     // Handle validation errors for enums (CurrentSOL and FinalStatus)
-    if (error.code === 'P2012') {
+    if (error.code === "P2012") {
       return res.status(400).json({
         message: "Invalid value provided for CurrentSOL or FinalStatus",
         status: false,
@@ -77,7 +76,7 @@ const createLead = async (req, res) => {
     }
 
     // Handle invalid field type errors
-    if (error.code === 'P2019') {
+    if (error.code === "P2019") {
       return res.status(400).json({
         message: "One or more field values are in an incorrect format",
         status: false,
@@ -88,7 +87,7 @@ const createLead = async (req, res) => {
     return res.status(500).json({
       message: "Failed to create lead. Please try again later",
       status: false,
-      debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+      debug: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
@@ -181,7 +180,6 @@ const changeCurrentSOL = async (req, res) => {
 };
 const changeFinalStatus = async (req, res) => {
   const { leadId, finalStatus } = req.body;
-  console.log("changeCurrentSOL Req.body =>", req.body);
 
   if (!leadId || typeof leadId !== "string") {
     return res.status(400).json({

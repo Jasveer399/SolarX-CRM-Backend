@@ -52,6 +52,7 @@ model Leads {
   whatsappUrl        String?
   noteForLead        String?
   isConvertToProject Boolean      @default(false)
+  project            Project?
   createdAt          DateTime     @default(now())
 }
 
@@ -85,6 +86,9 @@ model Project {
   isQuotation            Boolean      @default(false)
   isConvertToProject     Boolean      @default(true)
   whatsappLink           String?
+  leadId                 String       @unique
+  lead                   Leads        @relation(fields: [leadId], references: [id])
+  quotationId            Quotation?
   createdAt              DateTime     @default(now())
   newTime                DateTime     @default(now())
 }
@@ -125,6 +129,8 @@ model Quotation {
   pic4                  String?
   pic5                  String?
   isQuotation           Boolean  @default(true)
+  projectId             String      @unique
+  project               Project      @relation(fields: [projectId], references: [id])
   consumer              Boolean  @default(false)
   paymentDone           Boolean  @default(false)
   createdAt             DateTime @default(now())

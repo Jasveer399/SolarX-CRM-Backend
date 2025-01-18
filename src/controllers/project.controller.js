@@ -5,6 +5,7 @@ const createProject = async (req, res) => {
   const {
     name,
     mobileNumber,
+    leadId,
     villageCity,
     district,
     state,
@@ -28,6 +29,7 @@ const createProject = async (req, res) => {
         data: {
           finalStatus,
           isConvertToProject: true,
+          isQuotation: false,
           newTime: newDate,
         },
       });
@@ -42,6 +44,7 @@ const createProject = async (req, res) => {
       const createdProject = await prisma.project.create({
         data: {
           dateOfLead: date,
+          leadId: leadId,
           name,
           mobileNumber,
           villageCity,
@@ -154,11 +157,11 @@ const changeFinalStatus = async (req, res) => {
 };
 
 const changeProspectToLeads = async (req, res) => {
-  const { mobileNumber } = req.body;
+  const { leadId, projectId } = req.body;
   try {
     const updatedLead = await prisma.leads.update({
       where: {
-        mobileNumber: mobileNumber,
+        id: leadId,
       },
       data: {
         isConvertToProject: false,
@@ -168,7 +171,7 @@ const changeProspectToLeads = async (req, res) => {
     if (updatedLead) {
       const updatedProject = await prisma.project.update({
         where: {
-          mobileNumber: mobileNumber,
+          id: projectId,
         },
         data: {
           isConvertToProject: false,
@@ -298,6 +301,7 @@ const deleteProject = async (req, res) => {
     });
   }
 };
+
 export {
   createProject,
   getAllProject,
