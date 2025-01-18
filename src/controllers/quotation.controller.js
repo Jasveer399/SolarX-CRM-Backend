@@ -125,12 +125,15 @@ const updateQuotation = async (req, res) => {
     villageCity,
     assignedTo,
     pspdlSection,
+    pspclAccountNo,
     sanLoad,
     proposedSolarLoad,
     subsidy,
     baseAmount,
     gst,
+    gstAmount,
     totalPrice,
+    noteforQuotation,
   } = req.body;
 
   try {
@@ -146,14 +149,15 @@ const updateQuotation = async (req, res) => {
         pspdlSection,
         sanLoad,
         proposedSolarLoad,
+        pspclAccountNo,
+        noteforQuotation,
         subsidy,
         baseAmount,
         gst,
+        gstAmount,
         totalPrice,
       },
     });
-
-    console.log("updatedQuotation =>", updatedQuotation);
 
     if (!updatedQuotation) {
       return res.status(404).json({
@@ -322,6 +326,7 @@ const backToLead = async (req, res) => {
     });
   }
 };
+
 export {
   createQuotation,
   getAllQuotations,

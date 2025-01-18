@@ -1,10 +1,13 @@
 import prisma from "../DB/db.config.js";
 const createConsumer = async (req, res) => {
-  const { name, villageCity, mobileNumber, district } = req.body;
+  const { quotationId, name, villageCity, mobileNumber, district } = req.body;
+
+  // console.log("Req Body =========>", req.body);
+
   try {
     await prisma.quotation.update({
       where: {
-        mobileNumber,
+        id: quotationId,
       },
       data: {
         consumer: true,
@@ -18,6 +21,7 @@ const createConsumer = async (req, res) => {
         district,
       },
     });
+    // console.log("createdConsumer ==>", createdConsumer);
 
     if (!createdConsumer) {
       return res.status(500).json({

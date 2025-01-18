@@ -122,7 +122,9 @@ model Quotation {
   subsidy               SubSidy?
   baseAmount            Float?
   gst                   Float?
+  gstAmount             Float?
   totalPrice            Float?
+  noteforQuotation      String?
   pic1                  String?
   pic2                  String?
   pic3                  String?
