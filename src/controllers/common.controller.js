@@ -8,6 +8,9 @@ const createConsumerAndPayment = async (req, res) => {
     villageCity,
     mobileNumber,
     district,
+    gst,
+    gstAmount,
+    totalPrice,
     // Payment specific data
     phase,
     subsidy,
@@ -36,6 +39,11 @@ const createConsumerAndPayment = async (req, res) => {
           villageCity,
           mobileNumber,
           district,
+          gst,
+          gstAmount,
+          totalPrice,
+          pspclAccountNo,
+          pspdlSection,
         },
       });
 

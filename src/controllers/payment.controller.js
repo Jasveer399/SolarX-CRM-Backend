@@ -86,6 +86,7 @@ const updatePayment = async (req, res) => {
     totalProjectCost,
     totalAmountReceived,
     pendingAmount,
+    paymentMode,
     paymentReceived,
   } = req.body;
   console.log("Update Payment ::::::::::::::=>", req.body);
@@ -114,6 +115,7 @@ const updatePayment = async (req, res) => {
         name,
         district,
         villageCity,
+        paymentMode,
         totalProjectCost: parseFloat(totalProjectCost),
         totalAmountReceived: parseFloat(totalAmountReceived),
         pendingAmount: parseFloat(pendingAmount),

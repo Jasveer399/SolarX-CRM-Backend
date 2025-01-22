@@ -114,7 +114,7 @@ model Quotation {
   pspclAccountNo        String?
   villageCity           String?
   solarConnectionDemand String?
-  pspdlSection          String?
+  pspdlSection          String? //this field is PSPCL San Load
   sanLoad               Float?
   monthlyBill           Float?
   monthlyConsumption    Int?
@@ -139,13 +139,24 @@ model Quotation {
 }
 
 model Comsumer {
-  id           String   @id @default(uuid())
-  mobileNumber String   @unique
-  name         String
-  district     String
-  villageCity  String
-  consumer     Boolean  @default(true)
-  createdAt    DateTime @default(now())
+  id                String   @id @default(uuid())
+  mobileNumber      String   @unique
+  name              String
+  district          String
+  villageCity       String
+  pspclAccountNo    String
+  pspdlSection      String //this field is PSPCL San Load
+  totalPrice        Float
+  gst               Float
+  gstAmount         Float
+  consumer          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+}
+
+enum PaymentMode {
+Cash
+Cheque
+UPI 
 }
 
 model Payment {
@@ -162,6 +173,7 @@ model Payment {
   totalProjectCost      Float?
   totalAmountReceived   Float?
   pendingAmount         Float?
+  paymentMode           PaymentMode?
   paymentStatus         String            @default("Payment Panding")
   paymentDone           Boolean           @default(true)
   createdAt             DateTime          @default(now())
