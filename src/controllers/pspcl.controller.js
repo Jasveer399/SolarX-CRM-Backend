@@ -9,6 +9,7 @@ const createPSPCL = async (req, res) => {
     subsidy,
     phase,
     pspdlSection,
+    pspclAccountNo,
     solarConnectionDemand,
   } = req.body;
 
@@ -32,7 +33,8 @@ const createPSPCL = async (req, res) => {
         district,
         subsidy,
         phase,
-        pspdlSection, // This is pspclSanLoad
+        pspdlSection, // This is pspcl San Load
+        pspclAccountNumber: pspclAccountNo,
         solarConnectionDemand,
       },
     });

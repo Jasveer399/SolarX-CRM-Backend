@@ -89,7 +89,6 @@ const updatePayment = async (req, res) => {
     paymentMode,
     paymentReceived,
   } = req.body;
-  console.log("Update Payment ::::::::::::::=>", req.body);
   try {
     let paymentReceivedUpdate = {};
 

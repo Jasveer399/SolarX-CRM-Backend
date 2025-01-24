@@ -113,10 +113,17 @@ const getAllConsumerDetails = async (req, res) => {
       },
     });
 
+    const paymentData = await prisma.payment.findUnique({
+      where: {
+        mobileNumber,
+      },
+    });
+
     return res.status(200).json({
       leadsData,
       prospectData,
       quotationData,
+      paymentData,
       message: "All Consumer Data fetched Successfully!!",
       status: true,
     });

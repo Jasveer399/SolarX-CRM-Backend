@@ -236,8 +236,8 @@ model Pspcl {
 
 model CompanyDetail {
   id          String @id @default(uuid())
-  companyName String
-  companyGST  String
+  companyName String  @unique
+  companyGST  String  @unique
 }
 
 model StockManagement {
