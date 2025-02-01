@@ -266,3 +266,51 @@ model Product {
   stockManagement   StockManagement @relation(fields: [stockManagementId], references: [id])
   stockManagementId String
 }
+
+
+model FinalSubmissions {
+  id                                  String @id @default(uuid())
+  // Consumer Details
+  consumerName                        String @map("consumer_name")
+  accountNo                           String @unique @map("account_no")
+  sanLoad                             Float @map("san_load")
+  solarLoad                           Float @map("solar_load")
+  installationDate                    String? @map("installation_date")
+
+  // Bi-directional Meter Details
+  bidirectionalMeterNo                String? @map("bidirectional_meter_no")
+  bidirectionalMeterCap               String? @map("bidirectional_meter_cap")
+  bidirectionalMeterMake              String? @map("bidirectional_meter_make")
+  bidirectionalMeterMultiplyFactor    Int? @map("bidirectional_meter_multiply_factor")
+
+  // Import Reading
+  importKWH                           Float? @map("import_kwh")
+  importKVAH                          Float? @map("import_kvah")
+  importMDI                           Float? @map("import_mdi")
+
+  // Export Reading
+  exportKWH                           Float? @map("export_kwh")
+  exportKVAH                          Float? @map("export_kvah")
+  exportMDI                           Float? @map("export_mdi")
+
+  // Net/Solar Meter Details
+  netSolarMeterNo                     String? @map("net_solar_meter_no")
+  netSolarMeterCap                    String? @map("net_solar_meter_cap")
+  netSolarMeterMake                   String? @map("net_solar_meter_make")
+  netSolarMeterMultiplyFactor         Int? @map("net_solar_meter_multiply_factor")
+
+  // Net/Solar Meter Reading
+  netSolarKWH                         Float? @map("net_solar_kwh")
+  netSolarKVAH                        Float? @map("net_solar_kvah")
+  netSolarMDI                         Float? @map("net_solar_mdi")
+
+  // Old Meter Data
+  oldMeterNo                          String? @map("old_meter_no")
+  oldMeterCap                         String? @map("old_meter_cap")
+  oldMeterMake                        String? @map("old_meter_make")
+  oldMeterKWH                         Float? @map("old_meter_kwh")
+  oldMeterKVAH                        Float? @map("old_meter_kvah")
+  oldMeterMDI                         Float? @map("old_meter_mdi")
+
+  @@map("final_submissions")
+}

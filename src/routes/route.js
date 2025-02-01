@@ -9,6 +9,7 @@ import PSPCLRoutes from "./pspcl.routes.js";
 import StockManagement from "./stokeManagement.routes.js";
 import CompanyRoutes from "./company.routes.js";
 import { CommonRoutes } from "./common.routes.js";
+import { FinalSubmissionRoutes } from "./finalSubmissions.routes.js";
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use("/api/pspcl", PSPCLRoutes);
 router.use("/api/stockmanagements", StockManagement);
 router.use("/api/companys", CompanyRoutes);
 router.use("/api/common", CommonRoutes);
+router.use("/api/finalSubmissions", FinalSubmissionRoutes);
 
 export default router;

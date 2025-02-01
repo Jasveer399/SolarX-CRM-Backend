@@ -2,7 +2,6 @@ import prisma from "../DB/db.config.js";
 import { formatDate } from "../utils/DateFormate.js";
 
 const createLead = async (req, res) => {
-  console.log("Req.Body =>", req.body);
   const {
     mobileNumber,
     dateOfVisit,
