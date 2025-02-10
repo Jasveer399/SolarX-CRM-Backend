@@ -317,16 +317,43 @@ const updateLead = async (req, res) => {
   }
 };
 
-const BATCH_SIZE = 100; // Adjust this value based on your system's capabilities
+const BATCH_SIZE = 100;
+
+const formatDateforExcel = (dateString) => {
+  if (!dateString) return null;
+
+  // Remove any potential whitespace
+  dateString = dateString.trim();
+
+  // Try to identify the format
+  const parts = dateString.split(/[/-]/);
+
+  if (parts.length !== 3) return null;
+
+  // Check if it's yyyy/mm/dd format
+  if (parts[0].length === 4) {
+    // Convert from yyyy/mm/dd to dd/mm/yyyy
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+
+  // If it's already in dd/mm/yyyy format, return as is
+  if (parts[0].length === 2 || parts[0].length === 1) {
+    return dateString;
+  }
+
+  return null;
+};
 
 const processBatch = async (batch) => {
   return await Promise.all(
     batch.map(async (lead) => {
       try {
+        const formattedDate = formatDateforExcel(lead.dateOfVisit);
+
         return await prisma.leads.upsert({
           where: { mobileNumber: lead.mobileNumber },
           update: {
-            dateOfVisit: lead.dateOfVisit,
+            dateOfVisit: formattedDate,
             name: lead.name,
             villageCity: lead.villageCity,
             district: lead.district,
@@ -334,7 +361,7 @@ const processBatch = async (batch) => {
           },
           create: {
             mobileNumber: lead.mobileNumber,
-            dateOfVisit: lead.dateOfVisit,
+            dateOfVisit: formattedDate,
             name: lead.name,
             villageCity: lead.villageCity,
             district: lead.district,

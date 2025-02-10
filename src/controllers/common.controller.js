@@ -55,6 +55,7 @@ const createConsumerAndPayment = async (req, res) => {
           villageCity,
           district,
           phase: phase || "",
+          totalProjectCost: parseFloat(totalPrice),
           subsidy,
           pspclAccountNo,
           pspdlSection,
@@ -67,8 +68,8 @@ const createConsumerAndPayment = async (req, res) => {
         data: {
           consumerName: name,
           accountNo: pspclAccountNo,
-          sanLoad: pspdlSection,
-          solarLoad: proposedSolarLoad,
+          sanLoad: parseFloat(pspdlSection),
+          solarLoad: parseFloat(proposedSolarLoad),
         },
       });
 
