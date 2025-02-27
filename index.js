@@ -6,10 +6,21 @@ import path from "path";
 
 const app = express();
 
+const allowedOrigin =
+  process.env.CORS_ORIGIN || "https://solar-x-crm-front-end.vercel.app";
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: (origin, callback) => {
+      if (!origin || origin === allowedOrigin) {
+        callback(null, allowedOrigin);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
