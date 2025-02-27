@@ -9,6 +9,7 @@ const app = express();
 const allowedOrigin =
   process.env.CORS_ORIGIN || "https://solar-x-crm-front-end.vercel.app";
 
+// Just Check
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -43,4 +44,3 @@ app.use(routes);
 app.listen(process.env.PORT || 3000, () =>
   console.log("Server is running on PORT", process.env.PORT || 3000)
 );
-
