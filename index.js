@@ -8,12 +8,15 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin:
+      process.env.CORS_ORIGIN || "https://solar-x-crm-front-end.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+app.options("*", cors());
 
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), "public")));
