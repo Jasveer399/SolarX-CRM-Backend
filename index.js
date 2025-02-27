@@ -1,24 +1,31 @@
-
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 const app = express();
 
-app.options("*", cors());
+const allowedOrigin =
+  process.env.CORS_ORIGIN || "https://solar-x-crm-front-end.vercel.app";
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN, // ✅ Allow frontend domain
-    methods: ["GET", "POST", "PUT", "DELETE"], // ✅ Allow these HTTP methods
-    credentials: true, // ✅ Allow cookies & authorization headers
-    allowedHeaders: ["Content-Type", "Authorization"], // ✅ Allow these headers
+    origin: (origin, callback) => {
+      if (!origin || origin === allowedOrigin) {
+        callback(null, allowedOrigin);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(express.json());
-
+app.use(express.static(path.join(process.cwd(), "public")));
 app.use(
   express.urlencoded({
     extended: true,
@@ -33,9 +40,7 @@ app.use(cookieParser());
 import routes from "./src/routes/route.js";
 app.use(routes);
 
-// Start HTTP server (No SSL here, handled by Nginx)
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on HTTP PORT ${PORT}`);
-});
+app.listen(process.env.PORT || 3000, () =>
+  console.log("Server is running on PORT", process.env.PORT || 3000)
+);
 

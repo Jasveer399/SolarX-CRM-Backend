@@ -12,6 +12,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model Admin {
   id         String   @id @default(uuid())
   name       String
@@ -172,7 +173,6 @@ model Payment {
   totalProjectCost      Float?
   totalAmountReceived   Float?
   pendingAmount         Float?
-  paymentMode           PaymentMode?
   paymentStatus         String            @default("Payment Panding")
   paymentDone           Boolean           @default(true)
   createdAt             DateTime          @default(now())
@@ -180,11 +180,12 @@ model Payment {
 }
 
 model PaymentReceived {
-  id        String  @id @default(uuid())
-  amount    Float
-  date      String
-  payment   Payment @relation(fields: [paymentId], references: [id])
-  paymentId String
+  id           String  @id @default(uuid())
+  amount       Float
+  date         String
+  paymentMode  PaymentMode?
+  payment      Payment @relation(fields: [paymentId], references: [id])
+  paymentId    String
 }
 
 enum YesNo {

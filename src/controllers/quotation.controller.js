@@ -1,5 +1,5 @@
 import prisma from "../DB/db.config.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadLocal, uploadOnCloudinary } from "../utils/cloudinary.js";
 import fs from "fs";
 
 const createQuotation = async (req, res) => {
@@ -200,12 +200,13 @@ const upLoadSiteViewImage = async (req, res) => {
       });
     }
 
-    const siteImage = await uploadOnCloudinary(siteVisitImageLocalPath);
+    const imageUrl = await uploadLocal(req.file, "site-visits");
 
-    if (!siteImage) {
+    console.log("imageUrl =>", imageUrl);
+
+    if (!imageUrl) {
       return res.status(500).json({
-        message:
-          "Error while uploading image on cloudinary. Try Again Later !!",
+        message: "Error while uploading image. Try Again Later !!",
         status: false,
       });
     }
@@ -215,15 +216,13 @@ const upLoadSiteViewImage = async (req, res) => {
         id: id,
       },
       data: {
-        [picField]: siteImage,
+        [picField]: imageUrl,
       },
     });
 
-    fs.unlinkSync(siteVisitImageLocalPath);
-
     return res.status(200).json({
       data: {
-        [picField]: siteImage,
+        [picField]: imageUrl,
       },
       message: "Site Visit Image Updated Successfully !!",
       status: true,

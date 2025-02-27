@@ -98,6 +98,7 @@ const updatePayment = async (req, res) => {
         create: paymentReceived.map((payment) => ({
           amount: parseFloat(payment.amount),
           date: payment.date,
+          paymentMode: payment.paymentMode,
         })),
       };
     } else {
@@ -114,7 +115,6 @@ const updatePayment = async (req, res) => {
         name,
         district,
         villageCity,
-        paymentMode,
         totalProjectCost: parseFloat(totalProjectCost),
         totalAmountReceived: parseFloat(totalAmountReceived),
         pendingAmount: parseFloat(pendingAmount),

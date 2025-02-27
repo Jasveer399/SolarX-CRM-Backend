@@ -12,6 +12,7 @@ const createConsumerAndPayment = async (req, res) => {
     gstAmount,
     totalPrice,
     // Payment specific data
+    proposedSolarLoad,
     phase,
     subsidy,
     pspclAccountNo,
@@ -19,7 +20,6 @@ const createConsumerAndPayment = async (req, res) => {
     solarConnectionDemand,
   } = req.body;
 
-  console.log("Req Body =========>", req.body);
   try {
     const result = await prisma.$transaction(async (prismaClient) => {
       // Update quotation
@@ -55,10 +55,21 @@ const createConsumerAndPayment = async (req, res) => {
           villageCity,
           district,
           phase: phase || "",
+          totalProjectCost: parseFloat(totalPrice),
           subsidy,
           pspclAccountNo,
           pspdlSection,
           solarConnectionDemand,
+        },
+      });
+
+      // create Final Submission
+      await prismaClient.finalSubmissions.create({
+        data: {
+          consumerName: name,
+          accountNo: pspclAccountNo,
+          sanLoad: parseFloat(pspdlSection),
+          solarLoad: parseFloat(proposedSolarLoad),
         },
       });
 
