@@ -6,19 +6,9 @@ import path from "path";
 
 const app = express();
 
-const allowedOrigin =
-  process.env.CORS_ORIGIN || "https://solar-x-crm-front-end.vercel.app";
-
-// Just Check
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || origin === allowedOrigin) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: process.env.CORS_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
