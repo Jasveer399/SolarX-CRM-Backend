@@ -8,6 +8,9 @@ CREATE TYPE "FinalStatus" AS ENUM ('Converted', 'InProgress');
 CREATE TYPE "SubSidy" AS ENUM ('Subsidy', 'NoSubsidy');
 
 -- CreateEnum
+CREATE TYPE "PaymentMode" AS ENUM ('Cash', 'Cheque', 'UPI');
+
+-- CreateEnum
 CREATE TYPE "YesNo" AS ENUM ('Yes', 'No');
 
 -- CreateTable
@@ -71,6 +74,7 @@ CREATE TABLE "Project" (
     "isQuotation" BOOLEAN NOT NULL DEFAULT false,
     "isConvertToProject" BOOLEAN NOT NULL DEFAULT true,
     "whatsappLink" TEXT,
+    "leadId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "newTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -96,13 +100,16 @@ CREATE TABLE "Quotation" (
     "subsidy" "SubSidy",
     "baseAmount" DOUBLE PRECISION,
     "gst" DOUBLE PRECISION,
+    "gstAmount" DOUBLE PRECISION,
     "totalPrice" DOUBLE PRECISION,
+    "noteforQuotation" TEXT,
     "pic1" TEXT,
     "pic2" TEXT,
     "pic3" TEXT,
     "pic4" TEXT,
     "pic5" TEXT,
     "isQuotation" BOOLEAN NOT NULL DEFAULT true,
+    "projectId" TEXT NOT NULL,
     "consumer" BOOLEAN NOT NULL DEFAULT false,
     "paymentDone" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -117,6 +124,11 @@ CREATE TABLE "Comsumer" (
     "name" TEXT NOT NULL,
     "district" TEXT NOT NULL,
     "villageCity" TEXT NOT NULL,
+    "pspclAccountNo" TEXT NOT NULL,
+    "pspdlSection" TEXT NOT NULL,
+    "totalPrice" DOUBLE PRECISION NOT NULL,
+    "gst" DOUBLE PRECISION NOT NULL,
+    "gstAmount" DOUBLE PRECISION NOT NULL,
     "consumer" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -138,6 +150,7 @@ CREATE TABLE "Payment" (
     "totalProjectCost" DOUBLE PRECISION,
     "totalAmountReceived" DOUBLE PRECISION,
     "pendingAmount" DOUBLE PRECISION,
+    "paymentMode" "PaymentMode",
     "paymentStatus" TEXT NOT NULL DEFAULT 'Payment Panding',
     "paymentDone" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -239,6 +252,41 @@ CREATE TABLE "Product" (
     CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "final_submissions" (
+    "id" TEXT NOT NULL,
+    "consumer_name" TEXT NOT NULL,
+    "account_no" TEXT NOT NULL,
+    "san_load" DOUBLE PRECISION NOT NULL,
+    "solar_load" DOUBLE PRECISION NOT NULL,
+    "installation_date" TEXT,
+    "bidirectional_meter_no" TEXT,
+    "bidirectional_meter_cap" TEXT,
+    "bidirectional_meter_make" TEXT,
+    "bidirectional_meter_multiply_factor" INTEGER,
+    "import_kwh" DOUBLE PRECISION,
+    "import_kvah" DOUBLE PRECISION,
+    "import_mdi" DOUBLE PRECISION,
+    "export_kwh" DOUBLE PRECISION,
+    "export_kvah" DOUBLE PRECISION,
+    "export_mdi" DOUBLE PRECISION,
+    "net_solar_meter_no" TEXT,
+    "net_solar_meter_cap" TEXT,
+    "net_solar_meter_make" TEXT,
+    "net_solar_meter_multiply_factor" INTEGER,
+    "net_solar_kwh" DOUBLE PRECISION,
+    "net_solar_kvah" DOUBLE PRECISION,
+    "net_solar_mdi" DOUBLE PRECISION,
+    "old_meter_no" TEXT,
+    "old_meter_cap" TEXT,
+    "old_meter_make" TEXT,
+    "old_meter_kwh" DOUBLE PRECISION,
+    "old_meter_kvah" DOUBLE PRECISION,
+    "old_meter_mdi" DOUBLE PRECISION,
+
+    CONSTRAINT "final_submissions_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
 
@@ -249,7 +297,13 @@ CREATE UNIQUE INDEX "Leads_mobileNumber_key" ON "Leads"("mobileNumber");
 CREATE UNIQUE INDEX "Project_mobileNumber_key" ON "Project"("mobileNumber");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Project_leadId_key" ON "Project"("leadId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Quotation_mobileNumber_key" ON "Quotation"("mobileNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Quotation_projectId_key" ON "Quotation"("projectId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Comsumer_mobileNumber_key" ON "Comsumer"("mobileNumber");
@@ -259,6 +313,21 @@ CREATE UNIQUE INDEX "Payment_mobileNumber_key" ON "Payment"("mobileNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Pspcl_mobileNumber_key" ON "Pspcl"("mobileNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CompanyDetail_companyName_key" ON "CompanyDetail"("companyName");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CompanyDetail_companyGST_key" ON "CompanyDetail"("companyGST");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "final_submissions_account_no_key" ON "final_submissions"("account_no");
+
+-- AddForeignKey
+ALTER TABLE "Project" ADD CONSTRAINT "Project_leadId_fkey" FOREIGN KEY ("leadId") REFERENCES "Leads"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Quotation" ADD CONSTRAINT "Quotation_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PaymentReceived" ADD CONSTRAINT "PaymentReceived_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
